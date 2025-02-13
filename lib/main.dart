@@ -3,7 +3,7 @@ import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/core/app_theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -11,13 +11,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system,
-      darkTheme: AppTheme.darkTheme,
-      theme: AppTheme.lightTheme,
-      initialRoute: AppRoutes.home,
-      onGenerateRoute: AppRoutes.generateRoute,
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeNotifier,
+      builder: (context, themeMode, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          themeMode: themeMode,
+          darkTheme: AppTheme.darkTheme,
+          theme: AppTheme.lightTheme,
+          initialRoute: AppRoutes.home,
+          onGenerateRoute: AppRoutes.generateRoute,
+        );
+      },
     );
   }
 }

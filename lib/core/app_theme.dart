@@ -14,8 +14,10 @@ class AppTheme {
     ),
     textTheme: const TextTheme(
         bodyMedium: TextStyle(
+      fontSize: 18,
       color: Colors.black,
     )),
+    iconTheme: const IconThemeData(color: Colors.white),
   );
 
   /// dark mode
@@ -34,5 +36,17 @@ class AppTheme {
       fontSize: 18,
       color: Colors.white,
     )),
+    iconTheme: const IconThemeData(color: Colors.black),
   );
 }
+
+class CTheme extends ValueNotifier<ThemeMode> {
+  CTheme() : super(ThemeMode.light);
+  //ThemeMode currentThemeMode = ThemeMode.light;
+
+  void themeModeChanger() {
+    value = value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+  }
+}
+
+final CTheme themeNotifier = CTheme();
