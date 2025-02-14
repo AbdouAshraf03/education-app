@@ -5,7 +5,7 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
       primarySwatch: Colors.lightBlue,
       scaffoldBackgroundColor: Colors.white,
-      useMaterial3: true,
+      useMaterial3: false,
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.lightBlue,
       ),
@@ -27,7 +27,7 @@ class AppTheme {
   static ThemeData darkTheme = ThemeData(
       primarySwatch: Colors.lightBlue,
       scaffoldBackgroundColor: Color.fromARGB(136, 61, 61, 61),
-      useMaterial3: true,
+      useMaterial3: false,
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.lightBlue,
       ),

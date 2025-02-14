@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   CustomTextField(
       {super.key,
       required this.icon,
@@ -15,11 +16,17 @@ class CustomTextField extends StatelessWidget {
   bool isPassword;
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  bool passwordVisible = true;
+  @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      obscureText: isPassword,
+      controller: widget.controller,
+      keyboardType: widget.keyboardType,
+      obscureText: passwordVisible,
       enableSuggestions: false,
       // textDirection: TextDirection.rtl,
       cursorColor: const Color.fromARGB(255, 28, 113, 194),
@@ -30,15 +37,27 @@ class CustomTextField extends StatelessWidget {
             borderSide: BorderSide(
               color: Color.fromARGB(255, 28, 113, 194),
             )),
-        prefixIcon: Icon(icon, color: Colors.grey),
+        prefixIcon: Icon(widget.icon, color: Colors.grey),
         floatingLabelAlignment: FloatingLabelAlignment.start,
-
-        //focusColor: Color.fromARGB(255, 28, 113, 194),
-
+        suffixIcon: widget.isPassword
+            ? IconButton(
+                icon: Icon(
+                  passwordVisible ? Iconsax.eye_slash : Iconsax.eye,
+                  color: Colors.black54,
+                ),
+                onPressed: () {
+                  setState(
+                    () {
+                      passwordVisible = !passwordVisible;
+                    },
+                  );
+                },
+              )
+            : null,
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
         ),
-        labelText: labelText,
+        labelText: widget.labelText,
         labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.bold,
               fontSize: 16,
