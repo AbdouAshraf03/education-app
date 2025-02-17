@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:mr_samy_elmalah/widgets/light_dark_switch.dart';
+
+class MyDrawer extends StatelessWidget {
+  const MyDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.horizontal(left: Radius.circular(15))),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              accountName: Text('null',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      )),
+              accountEmail: Text(
+                'null',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              currentAccountPicture: CircleAvatar(
+                  // backgroundImage: NetworkImage(_imageurl == null
+                  //     ? 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSVqJm3fXSX67mLXUTYYaUqC_vGQsZtL3G8ickhGeuCVkWNWpbq'
+                  //     : _imageurl!), // Replace with your image link
+                  ),
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(
+                      'https://media.istockphoto.com/id/525242101/vector/math-background.jpg?s=612x612&w=0&k=20&c=pxDSP3dYr2VfWWdcNfCmQ_jwhTGQb4FUTZzU54c1Djk='), // Replace with your background image link
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            ListTile(
+              trailing: Icon(
+                Iconsax.profile_circle,
+                color: Theme.of(context).primaryIconTheme.color,
+              ),
+              title: Text("الملف الشخصي",
+                  textAlign: TextAlign.right,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      )),
+              // leading: ,
+              onTap: () {},
+            ),
+            // ListTile(
+            //   trailing: Icon(
+            //     Icons.nightlight_round,
+            //     color: Theme.of(context).primaryIconTheme.color,
+            //   ),
+            //   //leading:
+            //   title: Text("الوضع الداكن",
+            //       textAlign: TextAlign.right,
+            //       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            //             fontSize: 14,
+            //             fontWeight: FontWeight.bold,
+            //           )),
+            //   onTap: () {},
+            // ),
+            Divider(
+              color: Theme.of(context).primaryIconTheme.color,
+            ),
+            ListTile(
+              trailing: Icon(
+                Iconsax.logout,
+                color: Theme.of(context).primaryIconTheme.color,
+              ),
+              //leading: ,
+              title: Text(
+                "تسجيل الخروج",
+                textAlign: TextAlign.right,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              onTap: () {},
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.35,
+            ),
+            Text(
+              "Version",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+              textAlign: TextAlign.center,
+            )
+          ],
+        ));
+  }
+}
