@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:mr_samy_elmalah/widgets/light_dark_switch.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -90,6 +89,7 @@ class MyDrawer extends StatelessWidget {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.35,
             ),
+            Spacer(),
             Text(
               "Version",
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(

@@ -7,7 +7,12 @@ class AppTheme {
       scaffoldBackgroundColor: Colors.white,
       useMaterial3: false,
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.lightBlue,
+        centerTitle: true,
+        toolbarHeight: 65,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+        ),
+        backgroundColor: Colors.white,
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: Colors.white,
@@ -21,18 +26,26 @@ class AppTheme {
       iconTheme: const IconThemeData(color: Colors.white),
       buttonTheme: const ButtonThemeData(
         buttonColor: Color.fromARGB(255, 28, 113, 194),
+      ),
+      primaryIconTheme: IconThemeData(
+        color: Colors.black,
       ));
 
   /// dark mode
   static ThemeData darkTheme = ThemeData(
       primarySwatch: Colors.lightBlue,
-      scaffoldBackgroundColor: Color.fromARGB(136, 61, 61, 61),
+      scaffoldBackgroundColor: Color.fromARGB(255, 37, 37, 37),
       useMaterial3: false,
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.lightBlue,
+        centerTitle: true,
+        toolbarHeight: 65,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+        ),
+        backgroundColor: Color.fromARGB(255, 37, 37, 37),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: Color.fromARGB(137, 30, 30, 30),
+        backgroundColor: Color.fromARGB(255, 37, 37, 37),
       ),
       textTheme: const TextTheme(
           bodyMedium: TextStyle(
@@ -43,7 +56,11 @@ class AppTheme {
       iconTheme: const IconThemeData(color: Colors.black),
       buttonTheme: const ButtonThemeData(
         buttonColor: Color.fromARGB(255, 28, 113, 194),
+      ),
+      primaryIconTheme: IconThemeData(
+        color: Colors.white,
       ));
+/////////
 }
 
 class CTheme extends ValueNotifier<ThemeMode> {
@@ -52,6 +69,7 @@ class CTheme extends ValueNotifier<ThemeMode> {
 
   void themeModeChanger() {
     value = value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    //print(value);
   }
 }
 

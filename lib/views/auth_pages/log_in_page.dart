@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/widgets/custom_text_field.dart';
 
@@ -95,6 +95,9 @@ class LogInPage extends StatelessWidget {
                   ),
                   onPressed: () {
                     ///
+                    ///temporary
+                    Navigator.pushReplacementNamed(context, AppRoutes.home);
+
                     isLoading = true;
 
                     ///

@@ -1,17 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 import 'package:mr_samy_elmalah/views/home_pages/ai_page.dart';
 import 'package:mr_samy_elmalah/views/home_pages/home_page.dart';
 import 'package:mr_samy_elmalah/views/home_pages/video_page.dart';
 import 'package:mr_samy_elmalah/widgets/bottom_navigation_bar.dart';
+import 'package:mr_samy_elmalah/widgets/custom_drawer.dart';
+import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
+import 'package:mr_samy_elmalah/widgets/light_dark_switch.dart';
+
+class AppBarConfig {
+  final String title;
+  final List<Widget>? actions;
+  final Widget? leading;
+
+  AppBarConfig({required this.title, this.actions, this.leading});
+}
 
 class HomeViewModel {
   final ValueNotifier<int> currentIndex = ValueNotifier(0);
-  final List<Widget> pages = const [
-    HomePage(),
+  final List<Widget> pages = [
+    const HomePage(),
     AiPage(),
-    VideoPage(),
+    const VideoPage(),
   ];
+
+  List<AppBarConfig> get appBarConfigs => [
+        AppBarConfig(
+          leading: _buildHomeLeading(),
+          actions: [
+            IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Iconsax.search_normal_1_copy,
+                )),
+            AnimatedMenuButton(),
+          ],
+          title: 'الصفحه الرئيسية',
+        ),
+        AppBarConfig(
+          title: 'AI',
+          actions: [AnimatedMenuButton()],
+        ),
+        AppBarConfig(
+          title: 'حصصي',
+          actions: [AnimatedMenuButton()],
+        ),
+      ];
 
   void updateIndex(int index) {
     currentIndex.value = index;
@@ -19,6 +54,20 @@ class HomeViewModel {
 
   void dispose() {
     currentIndex.dispose();
+  }
+
+  static Widget _buildHomeLeading() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 18),
+          LightDarkSwitchApp(),
+          const SizedBox(height: 18),
+        ],
+      ),
+    );
   }
 }
 
@@ -31,6 +80,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final HomeViewModel _viewModel = HomeViewModel();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void dispose() {
@@ -40,13 +90,30 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true, //<------like this
-      body: ValueListenableBuilder<int>(
+    return ValueListenableBuilder<int>(
         valueListenable: _viewModel.currentIndex,
-        builder: (context, index, _) => _viewModel.pages[index],
-      ),
-      bottomNavigationBar: MyBottomNavigationBar(viewModel: _viewModel),
-    );
+        builder: (context, index, _) {
+          final config = _viewModel.appBarConfigs[index];
+          return Scaffold(
+            key: _scaffoldKey,
+            endDrawer: const MyDrawer(),
+            extendBody: true,
+            appBar: AppBar(
+              toolbarHeight: 65,
+              leadingWidth: 80,
+              automaticallyImplyLeading: false,
+              leading: config.leading,
+              actions: config.actions,
+              centerTitle: true,
+              title: Text(config.title,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      )),
+            ),
+            body: _viewModel.pages[index],
+            bottomNavigationBar: MyBottomNavigationBar(viewModel: _viewModel),
+          );
+        });
   }
 }

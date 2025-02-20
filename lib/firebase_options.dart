@@ -63,9 +63,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '663948094142',
     projectId: 'mr-sami-elmallah',
     storageBucket: 'mr-sami-elmallah.firebasestorage.app',
-    androidClientId: '663948094142-8lqt5c8p9qdfcrtst141uak2n626seus.apps.googleusercontent.com',
-    iosClientId: '663948094142-a5gs1tkp6rhc0ak0u1ps32og2vfvp31c.apps.googleusercontent.com',
+    androidClientId:
+        '663948094142-8lqt5c8p9qdfcrtst141uak2n626seus.apps.googleusercontent.com',
+    iosClientId:
+        '663948094142-a5gs1tkp6rhc0ak0u1ps32og2vfvp31c.apps.googleusercontent.com',
     iosBundleId: 'com.example.mrSamyElmalah',
   );
-
 }

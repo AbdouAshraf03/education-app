@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:mr_samy_elmalah/widgets/my_videos_card.dart';
 
 class VideoPage extends StatelessWidget {
   const VideoPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-          'حصصي',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-
-        //backgroundColor: T,
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 1.0,
       ),
+      child: ListView.builder(
+          itemCount: 2, itemBuilder: (context, index) => MyVideosCard()),
     );
   }
 }

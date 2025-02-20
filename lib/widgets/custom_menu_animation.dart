@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class AnimatedMenuButton extends StatefulWidget {
-  const AnimatedMenuButton({super.key});
-
+  const AnimatedMenuButton({
+    super.key, // required this.scaffoldKey
+  });
+  //final GlobalKey<ScaffoldState> scaffoldKey;
   @override
   State<AnimatedMenuButton> createState() => _AnimatedMenuButtonState();
 }
@@ -43,14 +45,17 @@ class _AnimatedMenuButtonState extends State<AnimatedMenuButton>
     return IconButton(
       onPressed: () {
         //drawer
+        //  widget.scaffoldKey.currentState?.openEndDrawer();
         Scaffold.of(context).openEndDrawer();
-
         _toggleAnimation();
         // Add your onPressed logic here
       },
       icon: RotationTransition(
         turns: _animation,
-        child: const Icon(Iconsax.menu_1_copy),
+        child: Icon(
+          Iconsax.menu_1_copy,
+          color: Theme.of(context).primaryIconTheme.color,
+        ),
       ),
     );
   }

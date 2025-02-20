@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:mr_samy_elmalah/widgets/custom_text_field.dart';
 
 // ignore: must_be_immutable
