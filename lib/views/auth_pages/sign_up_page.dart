@@ -164,7 +164,7 @@ class SignUpPage extends StatelessWidget {
                       keyboardType: TextInputType.emailAddress,
                       labelText: 'الأيميل',
                       controller: _emailController,
-                      icon: Iconsax.paperclip,
+                      icon: Iconsax.paperclip_copy,
                     ),
                     const SizedBox(height: 20),
                     //! password

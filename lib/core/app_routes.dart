@@ -3,12 +3,12 @@ import 'package:mr_samy_elmalah/views/auth_pages/log_in_page.dart';
 import 'package:mr_samy_elmalah/views/auth_pages/sign_up_page.dart';
 import 'package:mr_samy_elmalah/views/home_page_content/department_videos_page.dart';
 import 'package:mr_samy_elmalah/views/home_page_content/second_secondary.dart';
-
 import 'package:mr_samy_elmalah/views/home_page_content/third_secondary.dart';
-import 'package:mr_samy_elmalah/views/home_pages/ai_page.dart';
-import 'package:mr_samy_elmalah/views/home_pages/home_page.dart';
-import 'package:mr_samy_elmalah/views/home_pages/main_page.dart';
-import 'package:mr_samy_elmalah/views/home_pages/video_page.dart';
+import 'package:mr_samy_elmalah/views/main_pages/ai_page.dart';
+import 'package:mr_samy_elmalah/views/main_pages/home_page.dart';
+import 'package:mr_samy_elmalah/views/main_pages/main_page.dart';
+import 'package:mr_samy_elmalah/views/main_pages/video_page.dart';
+import 'package:mr_samy_elmalah/views/purchase_and_video/purchase_page.dart';
 
 class AppRoutes {
   static const String home = '/homePage';
@@ -19,6 +19,7 @@ class AppRoutes {
   static const String secondSecondary = '/secondSecondary';
   static const String thirdSecondary = '/thirdSecondary';
   static const String departmentsVideosPage = '/departmentsVideosPage';
+  static const String purchasePage = '/purchasePage';
   static const String mainPage = '/';
   // static const String departments = '/departments';
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -34,7 +35,12 @@ class AppRoutes {
         return MaterialPageRoute(builder: (context) => SignUpPage());
       // main page
       case mainPage:
-        return MaterialPageRoute(builder: (context) => MainPage());
+        final index = settings.arguments as int? ?? 0;
+        return MaterialPageRoute(
+          builder: (context) => MainPage(
+            index: index,
+          ),
+        );
       // videoPage page
       case videoPage:
         return MaterialPageRoute(builder: (context) => VideoPage());
@@ -49,7 +55,12 @@ class AppRoutes {
         return MaterialPageRoute(builder: (context) => ThirdSecondary());
       // departments page
       case departmentsVideosPage:
-        return MaterialPageRoute(builder: (context) => DepartmentVideos());
+        final title = settings.arguments as String;
+        return MaterialPageRoute(
+            builder: (context) => DepartmentVideos(title: title));
+      // PurchasePage
+      case purchasePage:
+        return MaterialPageRoute(builder: (context) => const PurchasePage());
       default:
         return MaterialPageRoute(
           builder: (context) => const Scaffold(

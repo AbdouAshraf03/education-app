@@ -2,7 +2,7 @@ import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
-import 'package:mr_samy_elmalah/views/home_pages/main_page.dart';
+import 'package:mr_samy_elmalah/views/main_pages/main_page.dart';
 
 // ignore: must_be_immutable
 class MyBottomNavigationBar extends StatelessWidget {

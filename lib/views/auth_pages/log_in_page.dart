@@ -58,7 +58,7 @@ class LogInPage extends StatelessWidget {
                 keyboardType: TextInputType.emailAddress,
                 labelText: 'الأيميل',
                 controller: _emailController,
-                icon: Iconsax.paperclip,
+                icon: Iconsax.paperclip_copy,
               ),
               const SizedBox(height: 20),
               //! password
@@ -96,7 +96,8 @@ class LogInPage extends StatelessWidget {
                   onPressed: () {
                     ///
                     ///temporary
-                    Navigator.pushReplacementNamed(context, AppRoutes.home);
+                    Navigator.pushReplacementNamed(context, AppRoutes.mainPage,
+                        arguments: 0);
 
                     isLoading = true;
 
