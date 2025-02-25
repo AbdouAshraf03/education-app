@@ -8,7 +8,9 @@ import 'package:mr_samy_elmalah/views/main_pages/ai_page.dart';
 import 'package:mr_samy_elmalah/views/main_pages/home_page.dart';
 import 'package:mr_samy_elmalah/views/main_pages/main_page.dart';
 import 'package:mr_samy_elmalah/views/main_pages/video_page.dart';
+import 'package:mr_samy_elmalah/views/profile_page/profile_page.dart';
 import 'package:mr_samy_elmalah/views/purchase_and_video/purchase_page.dart';
+import 'package:mr_samy_elmalah/views/video_player/video_player_page.dart';
 
 class AppRoutes {
   static const String home = '/homePage';
@@ -20,6 +22,8 @@ class AppRoutes {
   static const String thirdSecondary = '/thirdSecondary';
   static const String departmentsVideosPage = '/departmentsVideosPage';
   static const String purchasePage = '/purchasePage';
+  static const String videoPlayerPage = '/videoPlayerPage';
+  static const String profilePage = '/profilePage';
   static const String mainPage = '/';
   // static const String departments = '/departments';
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -61,6 +65,17 @@ class AppRoutes {
       // PurchasePage
       case purchasePage:
         return MaterialPageRoute(builder: (context) => const PurchasePage());
+      // PurchasePage
+      case profilePage:
+        return MaterialPageRoute(builder: (context) => ProfilePage());
+      // videoPlayerPage
+      case videoPlayerPage:
+        final Uri videoUrl = Uri.parse(
+            "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4");
+        return MaterialPageRoute(
+            builder: (context) => VideoPlayerPage(
+                  videoUrl: videoUrl,
+                ));
       default:
         return MaterialPageRoute(
           builder: (context) => const Scaffold(
