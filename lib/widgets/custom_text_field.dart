@@ -21,7 +21,7 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  bool passwordVisible = true;
+  late bool passwordVisible = widget.isPassword;
   @override
   Widget build(BuildContext context) {
     return TextField(
@@ -29,9 +29,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.keyboardType,
       obscureText: passwordVisible,
       enableSuggestions: false,
+
       // textDirection: TextDirection.rtl,
       cursorColor: const Color.fromARGB(255, 28, 113, 194),
-      style: const TextStyle(color: Color.fromRGBO(0, 0, 0, 1)),
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontFamily: 'roboto',
+          ),
       decoration: InputDecoration(
         focusedBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),

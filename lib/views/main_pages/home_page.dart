@@ -8,25 +8,31 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(height: 10),
-          //
-          SecondaryCard(
-            title: 'الصف الثاني الثانوي',
-            routeName: AppRoutes.secondSecondary,
-          ),
-          SecondaryCard(
-            title: 'الصف الثالث الثانوي',
-            routeName: AppRoutes.thirdSecondary,
-            imageUrl:
-                'https://www.edutrapedia.com/resources/thumbs/article_photos/Noj7cPv62g-571.jpg_729x410.jpg',
-          ),
-          SizedBox(height: 70),
-          // SizedBox(height: 20),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(height: 10),
+            //
+            SecondaryCard(
+              title: 'الصف الاول الثانوي',
+              routeName: AppRoutes.secondSecondary,
+            ),
+            SecondaryCard(
+              title: 'الصف الثاني الثانوي',
+              routeName: AppRoutes.secondSecondary,
+            ),
+            SecondaryCard(
+              title: 'الصف الثالث الثانوي',
+              routeName: AppRoutes.thirdSecondary,
+              imageUrl:
+                  'https://www.edutrapedia.com/resources/thumbs/article_photos/Noj7cPv62g-571.jpg_729x410.jpg',
+            ),
+            SizedBox(height: 70),
+            // SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:mr_samy_elmalah/core/app_routes.dart';
+import 'package:mr_samy_elmalah/data/firebase_auth_service.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -14,31 +16,32 @@ class MyDrawer extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text('null',
+              accountName: Text('Name',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       )),
               accountEmail: Text(
-                'null',
+                'Email',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
               ),
-              currentAccountPicture: CircleAvatar(
-                  // backgroundImage: NetworkImage(_imageurl == null
-                  //     ? 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSVqJm3fXSX67mLXUTYYaUqC_vGQsZtL3G8ickhGeuCVkWNWpbq'
-                  //     : _imageurl!), // Replace with your image link
-                  ),
+              // currentAccountPicture: CircleAvatar(
+              //     // backgroundImage: NetworkImage(_imageurl == null
+              //     //     ? 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSVqJm3fXSX67mLXUTYYaUqC_vGQsZtL3G8ickhGeuCVkWNWpbq'
+              //     //     : _imageurl!), // Replace with your image link
+              //     ),
               decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(
-                      'https://media.istockphoto.com/id/525242101/vector/math-background.jpg?s=612x612&w=0&k=20&c=pxDSP3dYr2VfWWdcNfCmQ_jwhTGQb4FUTZzU54c1Djk='), // Replace with your background image link
-                  fit: BoxFit.cover,
-                ),
-              ),
+                  // image: DecorationImage(
+                  //   image: NetworkImage(
+                  //       'https://media.istockphoto.com/id/525242101/vector/math-background.jpg?s=612x612&w=0&k=20&c=pxDSP3dYr2VfWWdcNfCmQ_jwhTGQb4FUTZzU54c1Djk='), // Replace with your background image link
+                  //   fit: BoxFit.cover,
+                  // ),
+                  ),
             ),
+            //! profile
             ListTile(
               trailing: Icon(
                 Iconsax.profile_circle,
@@ -51,7 +54,101 @@ class MyDrawer extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       )),
               // leading: ,
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context)
+                    .pushReplacementNamed(AppRoutes.profilePage);
+              },
+            ),
+
+            //! 2st
+            ListTile(
+              trailing: Icon(
+                Iconsax.book_1_copy,
+                color: Theme.of(context).primaryIconTheme.color,
+              ),
+              title: Text("الصف الثاني الثانوي",
+                  textAlign: TextAlign.right,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      )),
+              // leading: ,
+              onTap: () {
+                Navigator.of(context)
+                    .pushReplacementNamed(AppRoutes.secondSecondary);
+              },
+            ),
+            //! 3st
+            ListTile(
+              trailing: Icon(
+                Iconsax.book_1_copy,
+                color: Theme.of(context).primaryIconTheme.color,
+              ),
+              title: Text("الصف الثالث الثانوي",
+                  textAlign: TextAlign.right,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      )),
+              // leading: ,
+              onTap: () {
+                Navigator.of(context)
+                    .pushReplacementNamed(AppRoutes.thirdSecondary);
+              },
+            ),
+            //! Home
+            ListTile(
+              trailing: Icon(
+                Iconsax.home_1_copy,
+                color: Theme.of(context).primaryIconTheme.color,
+              ),
+              title: Text("الرئيسية",
+                  textAlign: TextAlign.right,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      )),
+              // leading: ,
+              onTap: () {
+                Navigator.pushReplacementNamed(context, AppRoutes.mainPage,
+                    arguments: 0);
+              },
+            ),
+            //! AI
+            ListTile(
+              trailing: Icon(
+                Iconsax.command_copy,
+                color: Theme.of(context).primaryIconTheme.color,
+              ),
+              title: Text("AI",
+                  textAlign: TextAlign.right,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      )),
+              // leading: ,
+              onTap: () {
+                Navigator.pushReplacementNamed(context, AppRoutes.mainPage,
+                    arguments: 1);
+              },
+            ),
+            //! my videos
+            ListTile(
+              trailing: Icon(
+                Iconsax.video_play_copy,
+                color: Theme.of(context).primaryIconTheme.color,
+              ),
+              title: Text("محاضراتي",
+                  textAlign: TextAlign.right,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      )),
+              // leading: ,
+              onTap: () {
+                Navigator.pushReplacementNamed(context, AppRoutes.mainPage,
+                    arguments: 2);
+              },
             ),
             // ListTile(
             //   trailing: Icon(
@@ -84,19 +181,30 @@ class MyDrawer extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
               ),
-              onTap: () {},
+              onTap: () {
+                FirebaseAuthService().signOut().then((value) {
+                  if (context.mounted) {
+                    Navigator.pushReplacementNamed(context, AppRoutes.logIn);
+                  }
+                });
+              },
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.35,
-            ),
-            Spacer(),
-            Text(
-              "Version",
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-              textAlign: TextAlign.center,
+
+            // const Expanded(
+            //   // Takes all remaining space
+            //   child: SizedBox.shrink(), // Empty space to push content down
+            // ),
+
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Text(
+                "Version",
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                textAlign: TextAlign.center,
+              ),
             )
           ],
         ));
