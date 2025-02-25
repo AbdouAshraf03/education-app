@@ -1,16 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:mr_samy_elmalah/data/firebase_auth_service.dart';
+import 'package:mr_samy_elmalah/data/firebase_import.dart';
+import 'package:mr_samy_elmalah/models/user.dart' as u;
 import 'package:mr_samy_elmalah/widgets/custom_text_field.dart';
+import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
 // ignore: must_be_immutable
-class SignUpPage extends StatelessWidget {
-  SignUpPage({super.key});
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passController = TextEditingController();
-  final TextEditingController _fnameController = TextEditingController();
-  final TextEditingController _lnameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _cpassController = TextEditingController();
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
   static const List<DropdownMenuEntry<int>> _grades = [
     DropdownMenuEntry(
       value: 1,
@@ -37,8 +36,28 @@ class SignUpPage extends StatelessWidget {
       ),
     ),
   ];
+
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController _emailController = TextEditingController();
+
+  final TextEditingController _passController = TextEditingController();
+
+  final TextEditingController _fnameController = TextEditingController();
+
+  final TextEditingController _lnameController = TextEditingController();
+
+  final TextEditingController _phoneController = TextEditingController();
+
+  final TextEditingController _cpassController = TextEditingController();
+
   bool isLoading = false;
+
   dynamic _selectedGrade;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,7 +140,7 @@ class SignUpPage extends StatelessWidget {
                     //   },
                     // ),
                     DropdownMenu(
-                        dropdownMenuEntries: _grades,
+                        dropdownMenuEntries: SignUpPage._grades,
                         initialSelection: _selectedGrade,
                         width: MediaQuery.of(context).size.width - 20,
                         textStyle: Theme.of(context)
@@ -194,16 +213,37 @@ class SignUpPage extends StatelessWidget {
                         ),
                         onPressed: () {
                           ///
-                          isLoading = true;
+                          setState(() {
+                            isLoading = true;
+                          });
+                          u.User user = u.User(
+                            fname: _fnameController.text,
+                            lname: _lnameController.text,
+                            graduate: _selectedGrade.toString(),
+                            phoneNumber: _phoneController.text,
+                            email: _emailController.text,
+                          );
+                          Map<String, String> mainUserData = user.mapOfUser;
+                          FirebaseAuthService().normalSignUp(
+                              _emailController.text,
+                              _passController.text,
+                              context);
+                          if (FirebaseAuth.instance.currentUser?.uid != null) {
+                            //TODO: send verification
+                            // FirebaseAuth.instance.currentUser!
+                            //     .sendEmailVerification();
+                            FirebaseImport().importUserData(mainUserData);
+                          }
+                          print(FirebaseAuth.instance.currentUser!.uid);
+                          setState(() {
+                            isLoading = false;
+                          });
 
                           ///
                         },
                         child: isLoading
-                            ? const SizedBox(
-                                height: 40,
-                                width: 40,
-                                child: CircularProgressIndicator(),
-                              )
+                            ? SizedBox(
+                                height: 50, width: 50, child: LottieLoader())
                             : const Text('تسجيل ',
                                 style: TextStyle(
                                   fontFamily: 'vip_hala',

@@ -1,15 +1,27 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
+import 'package:mr_samy_elmalah/data/firebase_auth_service.dart';
 import 'package:mr_samy_elmalah/widgets/custom_text_field.dart';
+import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
 // ignore: must_be_immutable
-class LogInPage extends StatelessWidget {
+class LogInPage extends StatefulWidget {
   LogInPage({super.key});
 
+  @override
+  State<LogInPage> createState() => _LogInPageState();
+}
+
+class _LogInPageState extends State<LogInPage> {
   final TextEditingController _emailController = TextEditingController();
+
   final TextEditingController _passController = TextEditingController();
+
   bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,21 +105,30 @@ class LogInPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  onPressed: () {
-                    ///
-                    ///temporary
-                    Navigator.pushReplacementNamed(context, AppRoutes.mainPage,
-                        arguments: 0);
-
-                    isLoading = true;
-
-                    ///
+                  onPressed: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    await FirebaseAuthService().normalSignIn(
+                        _emailController.text, _passController.text, context);
+                    setState(() {
+                      isLoading = false;
+                    });
+                    if (FirebaseAuthService().uid == null) {
+                      return;
+                    } else {
+                      if (context.mounted) {
+                        Navigator.pushReplacementNamed(
+                            context, AppRoutes.mainPage,
+                            arguments: 0);
+                      }
+                    }
                   },
                   child: isLoading
                       ? const SizedBox(
                           height: 40,
                           width: 40,
-                          child: CircularProgressIndicator(),
+                          child: LottieLoader(),
                         )
                       : const Text('تسجيل الدخول',
                           style: TextStyle(
@@ -117,14 +138,18 @@ class LogInPage extends StatelessWidget {
               const SizedBox(height: 10),
               //! sign up button
               TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.signUp);
-                  },
-                  child: Text('أعمل حساب جديد',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: Color.fromARGB(255, 28, 113, 194)))),
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.signUp);
+                },
+                child: Text(
+                  'أعمل حساب جديد',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: Color.fromARGB(255, 28, 113, 194),
+                      ),
+                ),
+              ),
               const SizedBox(height: 20),
               //! or
               Text('━━━━━━━ أو ━━━━━━━'),
@@ -143,14 +168,29 @@ class LogInPage extends StatelessWidget {
                           width: 0.5,
                         ),
                         color: const Color.fromARGB(255, 233, 235, 255),
-                        image: DecorationImage(
-                          image:
-                              AssetImage('assets/images/icons8-google-48.png'),
-                        ),
+                        image: isLoading
+                            ? null
+                            : DecorationImage(
+                                image: AssetImage(
+                                    'assets/images/icons8-google-48.png'),
+                              ),
                         borderRadius: BorderRadius.circular(10)),
-                    child: MaterialButton(
-                      onPressed: () {},
-                    ),
+                    child: isLoading
+                        ? LottieLoader()
+                        : MaterialButton(
+                            onPressed: () {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              FirebaseAuthService()
+                                  .signInWithGoogle(context)
+                                  .then((_) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              });
+                            },
+                          ),
                   ),
                   const SizedBox(width: 10),
                   //? facebook button
