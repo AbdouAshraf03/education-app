@@ -1,57 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/views/home_page_content/widget/departments_card.dart';
+import 'package:mr_samy_elmalah/widgets/custom_drawer.dart';
+import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
 import 'package:vertical_card_pager/vertical_card_pager.dart';
 
 class SecondSecondary extends StatelessWidget {
   SecondSecondary({super.key});
   final List<String> titles = [
     "ستاتيكا",
-    "ديناميكا",
-    "تفاضل و تكامل",
+    "الهندسة",
+    "تفاضل",
     "جبر",
-    "هندسه فراغيه",
+    "حساب المثلثات",
   ];
 
-  final List<Widget> images = [
-    DepartmentsCard(
-      title: 'ستاتيكا',
-      imageUrl:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoJl_vyLvjj1TkeCFiEgme8swZ98reFlhPIQ&s',
-    ),
-    DepartmentsCard(
-      title: 'ديناميكا',
-      imageUrl:
-          'https://media.istockphoto.com/id/518905264/vector/blackboard.jpg?s=612x612&w=0&k=20&c=Q29rc5MoCrRAkimWOwtH4F-WsfbImB7HNi2yrzdBQ7U=',
-    ),
-    DepartmentsCard(
-      imageUrl:
-          'https://img.freepik.com/free-vector/hand-drawn-scientific-formulas-chalkboard_23-2148496321.jpg?semt=ais_hybrid',
-      title: 'تفاضل و تكامل',
-    ),
-    DepartmentsCard(
-      imageUrl:
-          'https://img.goodfon.com/wallpaper/nbig/1/60/blackboard-mathematics-algebra.webp',
-      title: 'جبر',
-    ),
-    DepartmentsCard(
-      imageUrl:
-          'https://www.edutrapedia.com/resources/thumbs/article_photos/Noj7cPv62g-571.jpg_729x410.jpg',
-      title: 'هندسه فراغيه',
-    ),
-  ];
   @override
   Widget build(BuildContext context) {
+    final List<Widget> images = List.generate(
+      5,
+      (index) => DepartmentsCard(
+        title: titles[index],
+        imageUrl:
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoJl_vyLvjj1TkeCFiEgme8swZ98reFlhPIQ&s',
+      ),
+    );
     return Scaffold(
+      endDrawer: const MyDrawer(),
       appBar: AppBar(
-        title: Text(
-          "الاقسام",
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(fontWeight: FontWeight.bold),
-        ),
+        centerTitle: false,
+        actions: [
+          Center(
+            child: Text(
+              "الاقسام",
+              // textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          SizedBox(width: 20),
+          Icon(Iconsax.book_copy, color: Theme.of(context).primaryColor),
+          SizedBox(width: 20),
+          AnimatedMenuButton()
+        ],
         leading: IconButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pushReplacementNamed(
+                  context,
+                  AppRoutes.mainPage,
+                  arguments: 0,
+                ),
             icon: Icon(
               Icons.arrow_back_ios_new_rounded,
               color: Theme.of(context).primaryIconTheme.color,
@@ -62,7 +62,7 @@ class SecondSecondary extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: VerticalCardPager(
-                  width: MediaQuery.of(context).size.width - 30,
+                  width: MediaQuery.of(context).size.width - 40,
                   titles: titles, // required
                   images: images, // required
                   textStyle: TextStyle(
@@ -98,7 +98,9 @@ class SecondSecondary extends StatelessWidget {
                     // optional
                   },
                   onSelectedItem: (index) {
-                    // optional
+                    Navigator.pushNamed(
+                        context, AppRoutes.departmentsVideosPage,
+                        arguments: titles[index]);
                   },
                   initialPage: 2, // optional
                   align: ALIGN.CENTER, // optional
