@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mr_samy_elmalah/widgets/my_videos_card.dart';
+import 'package:mr_samy_elmalah/widgets/videos_card.dart';
 
 class VideoPage extends StatelessWidget {
   const VideoPage({super.key});

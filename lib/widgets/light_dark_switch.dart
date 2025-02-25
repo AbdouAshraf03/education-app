@@ -42,6 +42,7 @@ class _LDSwitchState extends State<LDSwitch>
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -50,11 +51,8 @@ class _LDSwitchState extends State<LDSwitch>
     // Attach status listener to the ANIMATION instead of controller
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller)
       ..addStatusListener((status) {
-        //print('🎬 Animation Status: $status');
         if (status == AnimationStatus.completed ||
             status == AnimationStatus.dismissed) {
-          //print(
-          //  '🌗 Toggling _changeSunToMoon from $_changeSunToMoon to ${!_changeSunToMoon}');
           setState(() {
             _changeSunToMoon = !_changeSunToMoon;
             themeNotifier.themeModeChanger();

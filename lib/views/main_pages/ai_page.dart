@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:mr_samy_elmalah/data/ai_service.dart';
 
 class AiPage extends StatefulWidget {
   const AiPage({super.key});
@@ -23,6 +25,7 @@ class _AiPageState extends State<AiPage> {
 
   void _handleSendPressed(types.PartialText message) {
     // User's message
+    AiService().generateText('');
     final userMessage = types.TextMessage(
       author: _user,
       createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -34,12 +37,12 @@ class _AiPageState extends State<AiPage> {
     _addMessage(userMessage);
 
     // Simulate AI response
-    Future.delayed(const Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 200), () async {
       final botMessage = types.TextMessage(
         author: _bot,
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: UniqueKey().toString(),
-        text: message.text,
+        text: await AiService().generateText(message.text) ?? 'No response',
         status: types.Status.delivered,
       );
 
@@ -71,14 +74,16 @@ class _AiPageState extends State<AiPage> {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           sentMessageBodyTextStyle:
               Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.bold,
+                    // fontWeight: FontWeight.bold,
+                    fontFamily: 'cairo',
                     fontSize: 14,
                     color: Colors.white,
                   ),
           receivedMessageBodyTextStyle:
               Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.bold,
+                    // fontWeight: FontWeight.bold,
                     fontSize: 14,
+                    fontFamily: 'cairo',
                     color: Colors.black,
                   ),
           inputTextCursorColor: Colors.blue,
