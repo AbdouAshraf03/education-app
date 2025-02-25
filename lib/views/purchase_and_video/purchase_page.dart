@@ -1,9 +1,79 @@
 import 'package:flutter/material.dart';
+
+import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/widgets/custom_drawer.dart';
 import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
 
 class PurchasePage extends StatelessWidget {
   const PurchasePage({super.key});
+
+  static final TextEditingController _textFieldController =
+      TextEditingController();
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: Text(
+            'ادخل كود المحاضرة',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'roboto',
+                ),
+          ),
+          content: TextField(
+            controller: _textFieldController,
+            keyboardType: TextInputType.multiline,
+            //obscureText: passwordVisible,
+            enableSuggestions: false,
+
+            // textDirection: TextDirection.rtl,
+            cursorColor: const Color.fromARGB(255, 28, 113, 194),
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontFamily: 'roboto'),
+            decoration: InputDecoration(
+              focusedBorder: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                  borderSide: BorderSide(
+                    color: Color.fromARGB(255, 28, 113, 194),
+                  )),
+              // prefixIcon: Icon(, color: Colors.grey),
+              floatingLabelAlignment: FloatingLabelAlignment.start,
+
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              ),
+              labelText: 'الكود',
+              labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.grey,
+                    textBaseline: TextBaseline.alphabetic,
+                  ),
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            ElevatedButton(
+              child: Text('OK'),
+              onPressed: () {
+                print(_textFieldController.text);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +116,126 @@ class PurchasePage extends StatelessWidget {
           ),
         ),
       ),
-      body: Center(child: Text("شراء المحاضرة")),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            //mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              //! image
+              Container(
+                height: 300,
+                width: MediaQuery.of(context).size.width - 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(25),
+                  ),
+                  image: DecorationImage(
+                    image: AssetImage(
+                      'assets/images/ORFF360.jpg',
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              //! title
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: Text(
+                  'المحاضره الاولى ستاتيكا',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                ),
+              ),
+              SizedBox(height: 20),
+              //! mony
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '60',
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      ': سعر المحاضرة ',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Theme.of(context).primaryColor),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              //! purchase bottom
+              MaterialButton(
+                onPressed: () {
+                  _displayTextInputDialog(context);
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                height: 45,
+                minWidth: MediaQuery.of(context).size.width - 40,
+                color: Theme.of(context).primaryColor,
+                child: Text(
+                  'شراء المحاضره',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(height: 45),
+              //! video section name
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: Text(
+                  'المحاضرات',
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      color: const Color.fromARGB(255, 127, 127, 127)),
+                ),
+              ),
+              SizedBox(height: 20),
+              //! videos
+              ListTile(
+                onTap: () {
+                  Navigator.pushNamed(context, AppRoutes.videoPlayerPage);
+                },
+                title: Text(
+                  'فيديو ما',
+                  textAlign: TextAlign.end,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                trailing: Container(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.all(Radius.circular(7))),
+                  height: 50,
+                  width: 50,
+                  child: Center(
+                    child: Icon(
+                      Icons.video_collection_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              Divider(
+                height: 5,
+                color: Colors.black,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
