@@ -6,8 +6,8 @@ import 'package:mr_samy_elmalah/widgets/custom_drawer.dart';
 import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
 import 'package:vertical_card_pager/vertical_card_pager.dart';
 
-class ThirdSecondary extends StatelessWidget {
-  ThirdSecondary({super.key});
+class Secondary extends StatelessWidget {
+  Secondary({super.key});
   final List<String> titles = [
     "ستاتيكا",
     "ديناميكا",

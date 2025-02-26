@@ -206,7 +206,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         'assets/lottie/Animation - 1740337284424.json',
         height: 130.0,
         width: 130.0,
-      ), // Replace with your loading animation(),
+      ),
     );
   }
 }

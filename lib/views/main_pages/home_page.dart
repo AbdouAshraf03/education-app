@@ -17,15 +17,15 @@ class HomePage extends StatelessWidget {
             //
             SecondaryCard(
               title: 'الصف الاول الثانوي',
-              routeName: AppRoutes.secondSecondary,
+              routeName: AppRoutes.secondary,
             ),
             SecondaryCard(
               title: 'الصف الثاني الثانوي',
-              routeName: AppRoutes.secondSecondary,
+              routeName: AppRoutes.secondary,
             ),
             SecondaryCard(
               title: 'الصف الثالث الثانوي',
-              routeName: AppRoutes.thirdSecondary,
+              routeName: AppRoutes.secondary,
               imageUrl:
                   'https://www.edutrapedia.com/resources/thumbs/article_photos/Noj7cPv62g-571.jpg_729x410.jpg',
             ),

@@ -74,8 +74,7 @@ class MyDrawer extends StatelessWidget {
                       )),
               // leading: ,
               onTap: () {
-                Navigator.of(context)
-                    .pushReplacementNamed(AppRoutes.secondSecondary);
+                Navigator.of(context).pushReplacementNamed(AppRoutes.secondary);
               },
             ),
             //! 3st
@@ -92,8 +91,7 @@ class MyDrawer extends StatelessWidget {
                       )),
               // leading: ,
               onTap: () {
-                Navigator.of(context)
-                    .pushReplacementNamed(AppRoutes.thirdSecondary);
+                Navigator.of(context).pushReplacementNamed(AppRoutes.secondary);
               },
             ),
             //! Home
