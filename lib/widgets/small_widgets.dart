@@ -26,8 +26,8 @@ class CustomDialog {
   String? title;
   String? desc;
   void Function()? btnOkOnPress;
-  void showdialog(BuildContext context) {
-    AwesomeDialog(
+  Future<void> showdialog(BuildContext context) async {
+    await AwesomeDialog(
       context: context,
       dialogType: dialogType,
       animType: AnimType.bottomSlide,

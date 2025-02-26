@@ -53,9 +53,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: LottieLoader());
         }
-
-        if (snapshot.hasData //&& snapshot.data!.emailVerified
-            ) {
+        if (snapshot.hasData && snapshot.data!.emailVerified) {
           return const MainPage(index: 0);
         }
         return LogInPage();
