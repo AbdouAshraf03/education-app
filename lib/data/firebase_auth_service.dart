@@ -7,6 +7,18 @@ import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
 class FirebaseAuthService {
   String? uid = FirebaseAuth.instance.currentUser?.uid;
+  String _getFriendlyErrorMessage(String code) {
+    switch (code) {
+      case 'invalid-email':
+        return 'The email address is badly formatted'; // Match Firebase's message
+      case 'user-not-found':
+        return 'No account found with this email';
+      case 'wrong-password':
+        return 'Incorrect password';
+      default:
+        return 'Login failed. Please try again';
+    }
+  }
 
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
@@ -18,25 +30,31 @@ class FirebaseAuthService {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
+      // print(e.code);
       if (context.mounted) {
-        CustomDialog(title: 'error', desc: e.code, dialogType: DialogType.error)
+        // print(e.code);
+        CustomDialog(
+                title: 'error',
+                desc: _getFriendlyErrorMessage(e.code),
+                dialogType: DialogType.error)
             .showdialog(context);
       }
     }
   }
 
-  Future<void> normalSignUp(
+  Future<UserCredential?> normalSignUp(
       String email, String password, BuildContext context) async {
     try {
-      await FirebaseAuth.instance
+      final UserCredential credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+      return credential;
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
         CustomDialog(title: 'error', desc: e.code, dialogType: DialogType.error)
             .showdialog(context);
-        return;
       }
     }
+    return null;
   }
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -74,6 +92,17 @@ class FirebaseAuthService {
       await FirebaseAuth.instance.currentUser!.sendEmailVerification();
     } catch (e) {
       print(e);
+    }
+  }
+
+  void resetPassword(BuildContext context, String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) {
+        CustomDialog(title: 'error', desc: e.code, dialogType: DialogType.error)
+            .showdialog(context);
+      }
     }
   }
 }

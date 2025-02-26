@@ -9,7 +9,7 @@ import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
 // ignore: must_be_immutable
 class LogInPage extends StatefulWidget {
-  LogInPage({super.key});
+  const LogInPage({super.key});
 
   @override
   State<LogInPage> createState() => _LogInPageState();
@@ -85,16 +85,39 @@ class _LogInPageState extends State<LogInPage> {
               Container(
                 alignment: Alignment.topRight,
                 child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.blue,
-                          fontFamily: 'ge_ss',
-                          fontWeight: FontWeight.bold),
-                      'نسيت كلمة المرور ؟',
-                      textAlign: TextAlign.right,
-                    )),
+                  onPressed: () async {
+                    try {
+                      await FirebaseAuth.instance
+                          .sendPasswordResetEmail(email: _emailController.text);
+                      if (context.mounted) {
+                        AwesomeDialog(
+                          context: context,
+                          dialogType: DialogType.success,
+                          animType: AnimType.topSlide,
+                          title: 'Successful reset password',
+                          desc: 'Please check your email to reset password',
+                        ).show();
+                      }
+                    } on FirebaseAuthException catch (e) {
+                      if (context.mounted) {
+                        CustomDialog(
+                          title: 'error',
+                          desc: e.code,
+                          dialogType: DialogType.error,
+                        ).showdialog(context);
+                      }
+                    }
+                  },
+                  child: Text(
+                    style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.blue,
+                        fontFamily: 'ge_ss',
+                        fontWeight: FontWeight.bold),
+                    'نسيت كلمة المرور ؟',
+                    textAlign: TextAlign.right,
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
               //! login button
@@ -109,19 +132,40 @@ class _LogInPageState extends State<LogInPage> {
                     setState(() {
                       isLoading = true;
                     });
-                    await FirebaseAuthService().normalSignIn(
-                        _emailController.text, _passController.text, context);
-                    setState(() {
-                      isLoading = false;
-                    });
-                    if (FirebaseAuthService().uid == null) {
-                      return;
-                    } else {
-                      if (context.mounted) {
-                        Navigator.pushReplacementNamed(
-                            context, AppRoutes.mainPage,
-                            arguments: 0);
+                    try {
+                      await FirebaseAuthService().normalSignIn(
+                        _emailController.text,
+                        _passController.text,
+                        context,
+                      );
+
+                      User? user = FirebaseAuth.instance.currentUser;
+                      if (!(user!.emailVerified)) {
+                        if (context.mounted) {
+                          await AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.info,
+                            animType: AnimType.rightSlide,
+                            title: 'Notice',
+                            desc: 'Please verify your email first',
+                          ).show();
+                        }
+                        await FirebaseAuth.instance.signOut();
+                      } else {
+                        if (context.mounted) {
+                          Navigator.pushReplacementNamed(
+                            context,
+                            AppRoutes.mainPage,
+                            arguments: 0,
+                          );
+                        }
                       }
+                    } catch (e) {
+                      print(e);
+                    } finally {
+                      setState(() {
+                        isLoading = false;
+                      });
                     }
                   },
                   child: isLoading
@@ -130,11 +174,13 @@ class _LogInPageState extends State<LogInPage> {
                           width: 40,
                           child: LottieLoader(),
                         )
-                      : const Text('تسجيل الدخول',
+                      : const Text(
+                          'تسجيل الدخول',
                           style: TextStyle(
                             fontFamily: 'vip_hala',
                             color: Colors.white,
-                          ))),
+                          ),
+                        )),
               const SizedBox(height: 10),
               //! sign up button
               TextButton(

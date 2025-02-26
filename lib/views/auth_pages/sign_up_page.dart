@@ -1,6 +1,8 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/data/firebase_auth_service.dart';
 import 'package:mr_samy_elmalah/data/firebase_import.dart';
 import 'package:mr_samy_elmalah/models/user.dart' as u;
@@ -62,7 +64,13 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios),
+            color: Theme.of(context).primaryIconTheme.color,
+          ),
           shadowColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
@@ -205,17 +213,25 @@ class _SignUpPageState extends State<SignUpPage> {
                     const SizedBox(height: 20),
                     //! sgin up button
                     MaterialButton(
-                        height: 55,
-                        minWidth: MediaQuery.of(context).size.width - 20,
-                        color: Color.fromARGB(255, 28, 113, 194),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        onPressed: () {
-                          ///
-                          setState(() {
-                            isLoading = true;
-                          });
+                      height: 55,
+                      minWidth: MediaQuery.of(context).size.width - 20,
+                      color: Color.fromARGB(255, 28, 113, 194),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      onPressed: () async {
+                        if (_passController.text != _cpassController.text) {
+                          CustomDialog(
+                            dialogType: DialogType.error,
+                            title: 'خطأ',
+                            desc: 'كلمة المرور غير متطابقة',
+                          ).showdialog(context);
+                          return;
+                        }
+                        setState(() {
+                          isLoading = true;
+                        });
+                        try {
                           u.User user = u.User(
                             fname: _fnameController.text,
                             lname: _lnameController.text,
@@ -224,31 +240,52 @@ class _SignUpPageState extends State<SignUpPage> {
                             email: _emailController.text,
                           );
                           Map<String, String> mainUserData = user.mapOfUser;
-                          FirebaseAuthService().normalSignUp(
-                              _emailController.text,
-                              _passController.text,
-                              context);
-                          if (FirebaseAuth.instance.currentUser?.uid != null) {
-                            //TODO: send verification
-                            // FirebaseAuth.instance.currentUser!
-                            //     .sendEmailVerification();
-                            FirebaseImport().importUserData(mainUserData);
+                          UserCredential? credential =
+                              await FirebaseAuthService().normalSignUp(
+                            _emailController.text,
+                            _passController.text,
+                            context,
+                          );
+
+                          if (credential?.user != null) {
+                            await FirebaseAuth.instance.currentUser!
+                                .sendEmailVerification();
+                            await FirebaseImport().importUserData(mainUserData);
+                            setState(() {
+                              isLoading = false;
+                            });
+                            if (context.mounted) {
+                              const snackBar = SnackBar(
+                                content: Text(
+                                    'Sign up Successful check your email to verify your account'),
+                                duration: Duration(seconds: 5),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                              Navigator.pushReplacementNamed(
+                                  context, AppRoutes.logIn);
+                            }
+                          } else {
+                            setState(() {
+                              isLoading = false;
+                            });
                           }
-                          print(FirebaseAuth.instance.currentUser!.uid);
+                        } catch (e) {
+                          // print(e);
                           setState(() {
                             isLoading = false;
                           });
-
-                          ///
-                        },
-                        child: isLoading
-                            ? SizedBox(
-                                height: 50, width: 50, child: LottieLoader())
-                            : const Text('تسجيل ',
-                                style: TextStyle(
-                                  fontFamily: 'vip_hala',
-                                  color: Colors.white,
-                                ))),
+                        }
+                      },
+                      child: isLoading
+                          ? SizedBox(
+                              height: 50, width: 50, child: LottieLoader())
+                          : const Text('تسجيل ',
+                              style: TextStyle(
+                                fontFamily: 'vip_hala',
+                                color: Colors.white,
+                              )),
+                    ),
                     const SizedBox(height: 40),
                   ]),
             ),
