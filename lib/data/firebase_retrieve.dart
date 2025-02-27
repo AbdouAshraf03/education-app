@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -14,5 +15,23 @@ class FirebaseRetrieve {
       print(e);
     }
     return null;
+  }
+
+  Future<List<dynamic>?> getSectionsNames(String collectionName) async {
+    //try {
+    //TODO: change this
+    var sections = await FirebaseFirestore.instance
+        .collection(collectionName)
+        .doc(collectionName == '1st_secondary' ||
+                collectionName == '2nd_secondary'
+            ? 'sections'
+            : 'section')
+        .get();
+    // print(sections.data()!['section_names']);
+    return sections.data()!['section_names'];
+    // } catch (e) {
+    //   print(e);
+    // }
+    // return ['Null'];
   }
 }

@@ -131,6 +131,7 @@ class _SecondaryCardState extends State<SecondaryCard>
                           Navigator.pushNamed(
                             context,
                             nameOfRoute,
+                            arguments: widget.title,
                           );
                         },
                         child: Text(

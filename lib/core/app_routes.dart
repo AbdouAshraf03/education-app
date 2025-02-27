@@ -52,7 +52,11 @@ class AppRoutes {
       // firstSecondary page
 
       case secondary:
-        return MaterialPageRoute(builder: (context) => Secondary());
+        String secondaryTitle = settings.arguments as String;
+        return MaterialPageRoute(
+            builder: (context) => Secondary(
+                  secondaryTitle: secondaryTitle,
+                ));
       // departments page
       case departmentsVideosPage:
         final title = settings.arguments as String;
