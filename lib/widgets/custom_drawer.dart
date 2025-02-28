@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/data/firebase_auth_service.dart';
+import 'package:mr_samy_elmalah/data/firebase_retrieve.dart';
+import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
+  Future<List<String>?> _getuser() async =>
+      await FirebaseRetrieve().getUserEmailAndName();
 
   @override
   Widget build(BuildContext context) {
@@ -15,32 +19,52 @@ class MyDrawer extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName: Text('Name',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      )),
-              accountEmail: Text(
-                'Email',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              // currentAccountPicture: CircleAvatar(
-              //     // backgroundImage: NetworkImage(_imageurl == null
-              //     //     ? 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSVqJm3fXSX67mLXUTYYaUqC_vGQsZtL3G8ickhGeuCVkWNWpbq'
-              //     //     : _imageurl!), // Replace with your image link
-              //     ),
-              decoration: const BoxDecoration(
-                  // image: DecorationImage(
-                  //   image: NetworkImage(
-                  //       'https://media.istockphoto.com/id/525242101/vector/math-background.jpg?s=612x612&w=0&k=20&c=pxDSP3dYr2VfWWdcNfCmQ_jwhTGQb4FUTZzU54c1Djk='), // Replace with your background image link
-                  //   fit: BoxFit.cover,
-                  // ),
-                  ),
-            ),
+            FutureBuilder(
+                future: _getuser(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: LottieLoader(),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+                  if (!snapshot.hasData) {
+                    return const Text('No data available');
+                    // print(snapshot.data![1]);
+                  } else {
+                    return UserAccountsDrawerHeader(
+                      accountName: Text(snapshot.data![1],
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                      accountEmail: Text(
+                        snapshot.data![0],
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      // currentAccountPicture: CircleAvatar(
+                      //     // backgroundImage: NetworkImage(_imageurl == null
+                      //     //     ? 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSVqJm3fXSX67mLXUTYYaUqC_vGQsZtL3G8ickhGeuCVkWNWpbq'
+                      //     //     : _imageurl!), // Replace with your image link
+                      //     ),
+                      decoration: const BoxDecoration(
+                          // image: DecorationImage(
+                          //   image: NetworkImage(
+                          //       'https://media.istockphoto.com/id/525242101/vector/math-background.jpg?s=612x612&w=0&k=20&c=pxDSP3dYr2VfWWdcNfCmQ_jwhTGQb4FUTZzU54c1Djk='), // Replace with your background image link
+                          //   fit: BoxFit.cover,
+                          // ),
+                          ),
+                    );
+                  }
+                  return SizedBox();
+                }),
+
             //! profile
             ListTile(
               trailing: Icon(
@@ -74,7 +98,8 @@ class MyDrawer extends StatelessWidget {
                       )),
               // leading: ,
               onTap: () {
-                Navigator.of(context).pushReplacementNamed(AppRoutes.secondary);
+                Navigator.of(context).pushReplacementNamed(AppRoutes.secondary,
+                    arguments: "الصف الثاني الثانوي");
               },
             ),
             //! 3st
@@ -91,7 +116,8 @@ class MyDrawer extends StatelessWidget {
                       )),
               // leading: ,
               onTap: () {
-                Navigator.of(context).pushReplacementNamed(AppRoutes.secondary);
+                Navigator.of(context).pushReplacementNamed(AppRoutes.secondary,
+                    arguments: "الصف الثالث الثانوي");
               },
             ),
             //! Home
