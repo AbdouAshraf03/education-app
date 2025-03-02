@@ -80,7 +80,7 @@ class _SecondaryCardState extends State<SecondaryCard>
     final String nameOfRoute = widget.routeName;
     return SizedBox(
       width: MediaQuery.of(context).size.width - 20,
-      height: MediaQuery.of(context).size.height - 530,
+      height: 310,
       child: Stack(
         children: <Widget>[
           // Image Container with separate animation
