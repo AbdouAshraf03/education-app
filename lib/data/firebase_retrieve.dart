@@ -44,13 +44,27 @@ class FirebaseRetrieve {
           .get();
       return [
         userData.data()!['userMainData']['email'],
-        userData.data()!['userMainData']['fname'] +
-            ' ' +
-            userData.data()!['userMainData']['lname']
+        '${userData.data()!['userMainData']['fname']} ${userData.data()!['userMainData']['lname']}'
       ];
     } catch (e) {
       print(e);
     }
     return ['Null', 'Null'];
+  }
+
+  Future<List<Map<String, dynamic>>> getMyVideos() async {
+    try {
+      final String uid = FirebaseAuth.instance.currentUser!.uid;
+      var snapshot = await FirebaseFirestore.instance
+          .collection('students')
+          .doc(uid)
+          .collection('user_videos')
+          .get();
+
+      return snapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      print(e);
+    }
+    return [];
   }
 }
