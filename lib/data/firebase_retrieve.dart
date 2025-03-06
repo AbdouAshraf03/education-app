@@ -68,7 +68,7 @@ class FirebaseRetrieve {
 //     }
 //     return [];
 // =======
-  Future getMyVideos() async {
+  Future<List<Map<String, dynamic>>> getMyVideos() async {
     try {
       List<Map<String, dynamic>> videosList = [];
       final String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -97,14 +97,31 @@ class FirebaseRetrieve {
         videosList.add(video.data());
       }
 
-      //  print(videosList);
+      // print(videosList);
+      return videosList;
     } catch (e) {
       print(e.toString() + ' =======================');
     }
-    return ['Null', 'Null'];
+    return [{}, {}];
   }
 
-  Future getMyVideoData(String videoId, String graduate, String section) async {
+  Future<List<Map<String, dynamic>>> getMyVideosFromList(
+      List<Map<String, dynamic>> videosMapList) async {
+    List<Map<String, dynamic>> videosData = [];
+    String graduate = videosMapList[0]['graduate'];
+    videosMapList.removeAt(0);
+
+    for (var video in videosMapList) {
+      var data =
+          await _getMyVideoData(video['video_id'], graduate, video['section']);
+      videosData.add(data);
+    }
+    // print(videosData);
+    return videosData;
+  }
+
+  Future _getMyVideoData(
+      String videoId, String graduate, String section) async {
     try {
       var snapshot = await FirebaseFirestore.instance
           .collection(graduate)
@@ -113,6 +130,7 @@ class FirebaseRetrieve {
           .collection(section)
           .doc(videoId)
           .get();
+      //print(snapshot.data());
       return snapshot.data();
     } catch (e) {
       print(e.toString() + ' =======================');
