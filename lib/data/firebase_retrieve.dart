@@ -96,7 +96,6 @@ class FirebaseRetrieve {
       for (var video in videos) {
         videosList.add(video.data());
       }
-
       // print(videosList);
       return videosList;
     } catch (e) {
@@ -113,15 +112,14 @@ class FirebaseRetrieve {
 
     for (var video in videosMapList) {
       var data =
-          await _getMyVideoData(video['video_id'], graduate, video['section']);
+          await _getVideoData(video['video_id'], graduate, video['section']);
       videosData.add(data);
     }
     // print(videosData);
     return videosData;
   }
 
-  Future _getMyVideoData(
-      String videoId, String graduate, String section) async {
+  Future _getVideoData(String videoId, String graduate, String section) async {
     try {
       var snapshot = await FirebaseFirestore.instance
           .collection(graduate)
@@ -136,4 +134,21 @@ class FirebaseRetrieve {
       print(e.toString() + ' =======================');
     }
   }
+
+  Future<List<Map<String, dynamic>>?> getVideos(
+      String graduate, String section) async {
+    try {
+      var snapshot = await FirebaseFirestore.instance
+          .collection(graduate)
+          .doc('section')
+          .collection(section)
+          .get();
+      return snapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
+//!#######
 }

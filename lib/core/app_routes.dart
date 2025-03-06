@@ -59,9 +59,15 @@ class AppRoutes {
                 ));
       // departments page
       case departmentsVideosPage:
-        final title = settings.arguments as String;
+        final routeArg = settings.arguments as Map<String, String>;
+        final title = routeArg['title'];
+        final graduate = routeArg['graduate'];
         return MaterialPageRoute(
-            builder: (context) => DepartmentVideos(title: title));
+          builder: (context) => DepartmentVideos(
+            title: title!,
+            graduate: graduate!,
+          ),
+        );
       // PurchasePage
       case purchasePage:
         return MaterialPageRoute(builder: (context) => const PurchasePage());

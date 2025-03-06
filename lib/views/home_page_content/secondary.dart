@@ -11,7 +11,7 @@ import 'package:vertical_card_pager/vertical_card_pager.dart';
 class Secondary extends StatelessWidget {
   Secondary({super.key, required this.secondaryTitle});
 
-  var secondaryTitle;
+  final String secondaryTitle;
 
   String getSecondaryTitle() {
     String title = switch (secondaryTitle) {
@@ -20,11 +20,11 @@ class Secondary extends StatelessWidget {
       'الصف الثالث الثانوي' => "3rd_secondary",
       _ => "Null",
     };
-    print("Secondary Title: $title"); // Debugging statement
+    //  print("Secondary Title: $title"); // Debugging statement
     return title;
   }
 
-  List<String> sectionsTitles = [];
+  // List<String> sectionsTitles = [];
   final List<String> sectionsImagesUrls = List.generate(
     5,
     (index) =>
@@ -32,11 +32,11 @@ class Secondary extends StatelessWidget {
   );
 
   Future<List<String>?> _getSections() async {
-    print(
-        "Calling getSectionsNames with title: ${getSecondaryTitle()}"); // Debugging statement
+    // print(
+    //     "Calling getSectionsNames with title: ${getSecondaryTitle()}"); // Debugging statement
     List? sections =
         await FirebaseRetrieve().getSectionsNames(getSecondaryTitle());
-    print("Sections: $sections"); // Debugging statement
+    //print("Sections: $sections"); // Debugging statement
     return sections?.cast<String>();
   }
 
@@ -45,8 +45,8 @@ class Secondary extends StatelessWidget {
     return FutureBuilder(
       future: _getSections(),
       builder: (context, snapshot) {
-        print(
-            "FutureBuilder called with snapshot: ${snapshot.connectionState}"); // Debugging statement
+        // print(
+        //     "FutureBuilder called with snapshot: ${snapshot.connectionState}"); // Debugging statement
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             endDrawer: const MyDrawer(),
@@ -172,7 +172,10 @@ class Secondary extends StatelessWidget {
                         Navigator.pushNamed(
                           context,
                           AppRoutes.departmentsVideosPage,
-                          arguments: snapshot.data![index],
+                          arguments: {
+                            'title': snapshot.data![index],
+                            'graduate': getSecondaryTitle()
+                          },
                         );
 
                         // optional
