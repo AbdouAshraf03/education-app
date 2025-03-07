@@ -19,7 +19,7 @@ class LottieNoData extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
         child: Lottie.asset(
-          'assets/lottie/waqQPhxnbi.json',
+          'assets/lottie/NoData.json',
           height: 200.0,
           width: 200.0,
         ),
