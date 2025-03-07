@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 
 class MyVideosCard extends StatefulWidget {
-  const MyVideosCard({super.key});
+  const MyVideosCard({super.key, required this.myVideos});
+  final Map<String, dynamic> myVideos;
 
   @override
   State<MyVideosCard> createState() => _MyVideosCardState();
@@ -10,19 +11,24 @@ class MyVideosCard extends StatefulWidget {
 
 class _MyVideosCardState extends State<MyVideosCard>
     with SingleTickerProviderStateMixin {
-  final Map<String, dynamic> myVideos = {
-    'title':
-        'ديناميكا التكنولوجيا الإلكترونية في الأداء البيئي والإنتاج البيئي',
-    'number_of_hours': 6,
-    'number_of_video': 3,
-    'imageurl': 'assets/images/ORFF360.jpg'
-  };
+  // final Map<String, dynamic> myVideos = {
+  //   'title':
+  //       'ديناميكا التكنولوجيا الإلكترونية في الأداء البيئي والإنتاج البيئي',
+  //   'long_of_vid': 6,
+  //   'no_of_vid': 3,
+  //   'price': 60,
+  //   'imageurl': 'assets/images/ORFF360.jpg',
+  //   'vid_code': 'ORFF360',
+  //   'video_url': [],
+  //   'image_url': ''
+  // };
 
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
+    print(widget.myVideos);
     super.initState();
     _controller = AnimationController(
       vsync: this,
@@ -76,7 +82,8 @@ class _MyVideosCardState extends State<MyVideosCard>
             width: MediaQuery.of(context).size.width - 20,
             child: MaterialButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(AppRoutes.purchasePage);
+                Navigator.of(context).pushNamed(AppRoutes.purchasePage,
+                    arguments: widget.myVideos);
               },
               padding: const EdgeInsets.all(10),
               child: Row(
@@ -89,7 +96,7 @@ class _MyVideosCardState extends State<MyVideosCard>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${myVideos['title']!}',
+                          '${widget.myVideos['title'] ?? ''}',
                           textAlign: TextAlign.end,
                           style: Theme.of(context)
                               .textTheme
@@ -104,7 +111,7 @@ class _MyVideosCardState extends State<MyVideosCard>
                           children: [
                             Flexible(
                               child: Text(
-                                '( ${myVideos['number_of_hours']} ) عدد الساعات',
+                                '( ${widget.myVideos['long_of_vid']} ) عدد الساعات',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
@@ -117,7 +124,7 @@ class _MyVideosCardState extends State<MyVideosCard>
                             const SizedBox(width: 10),
                             Flexible(
                               child: Text(
-                                '( ${myVideos['number_of_video']} ) رقم الحصه ',
+                                '( ${widget.myVideos['no_of_vid']} ) رقم الحصه ',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
@@ -148,7 +155,7 @@ class _MyVideosCardState extends State<MyVideosCard>
                       color: Colors.black,
                       borderRadius: BorderRadius.circular(10),
                       image: DecorationImage(
-                        image: AssetImage("assets/images/ORFF360.jpg"),
+                        image: NetworkImage(widget.myVideos['image_url'] ?? ''),
                         fit: BoxFit.cover,
                       ),
                     ),

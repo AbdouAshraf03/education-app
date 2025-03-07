@@ -70,14 +70,15 @@ class AppRoutes {
         );
       // PurchasePage
       case purchasePage:
-        return MaterialPageRoute(builder: (context) => const PurchasePage());
+        final routeArg = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+            builder: (context) => PurchasePage(routeArg: routeArg));
       // PurchasePage
       case profilePage:
         return MaterialPageRoute(builder: (context) => ProfilePage());
       // videoPlayerPage
       case videoPlayerPage:
-        final Uri videoUrl = Uri.parse(
-            "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4");
+        final Uri videoUrl = Uri.parse(settings.arguments as String);
         return MaterialPageRoute(
             builder: (context) => VideoPlayerPage(
                   videoUrl: videoUrl,

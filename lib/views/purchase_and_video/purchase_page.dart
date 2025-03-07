@@ -5,8 +5,8 @@ import 'package:mr_samy_elmalah/widgets/custom_drawer.dart';
 import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
 
 class PurchasePage extends StatelessWidget {
-  const PurchasePage({super.key});
-
+  const PurchasePage({super.key, required this.routeArg});
+  final Map<String, dynamic> routeArg;
   static final TextEditingController _textFieldController =
       TextEditingController();
   Future<void> _displayTextInputDialog(BuildContext context) async {
@@ -131,8 +131,8 @@ class PurchasePage extends StatelessWidget {
                     Radius.circular(25),
                   ),
                   image: DecorationImage(
-                    image: AssetImage(
-                      'assets/images/ORFF360.jpg',
+                    image: NetworkImage(
+                      routeArg['image_url'],
                     ),
                   ),
                 ),
@@ -142,7 +142,7 @@ class PurchasePage extends StatelessWidget {
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: Text(
-                  'المحاضره الاولى ستاتيكا',
+                  routeArg['title'],
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                 ),
@@ -155,7 +155,7 @@ class PurchasePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      '60',
+                      routeArg['price'].toString(),
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -205,32 +205,46 @@ class PurchasePage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               //! videos
-              ListTile(
-                onTap: () {
-                  Navigator.pushNamed(context, AppRoutes.videoPlayerPage);
-                },
-                title: Text(
-                  'فيديو ما',
-                  textAlign: TextAlign.end,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                trailing: Container(
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.all(Radius.circular(7))),
-                  height: 50,
-                  width: 50,
-                  child: Center(
-                    child: Icon(
-                      Icons.video_collection_rounded,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              Divider(
-                height: 5,
-                color: Colors.black,
+              SizedBox(
+                height: 250,
+                child: ListView.builder(
+                    itemCount: routeArg['video_url']!.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          ListTile(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.videoPlayerPage,
+                                  arguments: routeArg['video_url']![index]);
+                            },
+                            title: Text(
+                              'part ${index + 1}',
+                              textAlign: TextAlign.end,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            trailing: Container(
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(7))),
+                              height: 50,
+                              width: 50,
+                              child: Center(
+                                child: Icon(
+                                  Icons.video_collection_rounded,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Divider(
+                            height: 5,
+                            color: Colors.black,
+                          ),
+                        ],
+                      );
+                    }),
               ),
             ],
           ),

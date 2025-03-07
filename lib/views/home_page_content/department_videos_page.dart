@@ -23,8 +23,7 @@ class DepartmentVideos extends StatelessWidget {
     return FutureBuilder(
       future: _getVideos(),
       builder: (context, snapshot) {
-        print(
-            "FutureBuilder called with snapshot: ${snapshot.connectionState}"); // Debugging statement
+        // Debugging statement
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             body: const Center(
@@ -34,46 +33,23 @@ class DepartmentVideos extends StatelessWidget {
         }
         if (snapshot.hasData) {
           //print(snapshot.data);
-          return _buildmain(context, snapshot);
+          return _buildmain(
+            context,
+            ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) =>
+                    MyVideosCard(myVideos: snapshot.data![index])),
+          );
         }
-        print(
-            "Snapshot has no data or error: ${snapshot.error}"); // Debugging statement
-        return Scaffold(
-          endDrawer: const MyDrawer(),
-          appBar: AppBar(
-            centerTitle: false,
-            shadowColor: Colors.transparent,
-            actions: [
-              Center(
-                child: Text(
-                  title,
-                  // textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(width: 20),
-              Icon(Iconsax.book_1_copy, color: Theme.of(context).primaryColor),
-              SizedBox(width: 20),
-              AnimatedMenuButton()
-            ],
-            leading: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: Theme.of(context).primaryIconTheme.color,
-              ),
-            ),
-          ),
-        );
+        if (snapshot.hasError) {
+          return _buildmain(context, LottieError());
+        }
+        return _buildmain(context, LottieNoData());
       },
     );
   }
 
-  Widget _buildmain(
-      BuildContext context, AsyncSnapshot<List<dynamic>?> dataSnapshot) {
+  Widget _buildmain(BuildContext context, Widget mainWidget) {
     return Scaffold(
       endDrawer: const MyDrawer(),
       appBar: AppBar(
@@ -104,13 +80,10 @@ class DepartmentVideos extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(
-          top: 1.0,
-        ),
-        child: ListView.builder(
-            itemCount: dataSnapshot.data!.length,
-            itemBuilder: (context, index) => MyVideosCard()),
-      ),
+          padding: const EdgeInsets.only(
+            top: 1.0,
+          ),
+          child: mainWidget),
     );
   }
 }

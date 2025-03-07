@@ -95,7 +95,6 @@ class Secondary extends StatelessWidget {
               imageUrl: sectionsImagesUrls[index],
             ),
           );
-
           return Scaffold(
             endDrawer: const MyDrawer(),
             appBar: AppBar(
@@ -190,8 +189,42 @@ class Secondary extends StatelessWidget {
             ),
           );
         }
-        print(
-            "Snapshot has no data or error: ${snapshot.error}"); // Debugging statement
+        if (snapshot.hasError) {
+          Scaffold(
+            endDrawer: const MyDrawer(),
+            appBar: AppBar(
+              centerTitle: false,
+              actions: [
+                Center(
+                  child: Text(
+                    "الاقسام",
+                    // textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(width: 20),
+                Icon(Iconsax.book_copy, color: Theme.of(context).primaryColor),
+                SizedBox(width: 20),
+                AnimatedMenuButton()
+              ],
+              leading: IconButton(
+                onPressed: () => Navigator.pushReplacementNamed(
+                  context,
+                  AppRoutes.mainPage,
+                  arguments: 0,
+                ),
+                icon: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: Theme.of(context).primaryIconTheme.color,
+                ),
+              ),
+            ),
+            body: LottieError(),
+          );
+        }
         return Scaffold(
           endDrawer: const MyDrawer(),
           appBar: AppBar(
@@ -224,9 +257,7 @@ class Secondary extends StatelessWidget {
               ),
             ),
           ),
-          body: const Center(
-            child: Text('Error'),
-          ),
+          body: LottieNoData(),
         );
       },
     );
