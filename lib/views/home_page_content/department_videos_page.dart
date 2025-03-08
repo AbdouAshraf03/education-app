@@ -37,8 +37,8 @@ class DepartmentVideos extends StatelessWidget {
             context,
             ListView.builder(
                 itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) =>
-                    MyVideosCard(myVideos: snapshot.data![index])),
+                itemBuilder: (context, index) => MyVideosCard(
+                    myVideos: snapshot.data![index], isPurchased: false)),
           );
         }
         if (snapshot.hasError) {

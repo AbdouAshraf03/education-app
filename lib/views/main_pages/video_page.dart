@@ -7,12 +7,9 @@ import 'package:mr_samy_elmalah/widgets/videos_card.dart';
 class VideoPage extends StatelessWidget {
   const VideoPage({super.key});
   Future<List?> _getVideos() async {
-    List videosData;
-    await FirebaseRetrieve().getMyVideos().then((value) async {
-      videosData = await FirebaseRetrieve().getMyVideosFromList(value);
-      return videosData;
-    });
-    return null;
+    var data = await FirebaseRetrieve().getMyVideos();
+    List videosData = await FirebaseRetrieve().getMyVideosFromList(data);
+    return videosData;
   }
 
   @override
@@ -20,6 +17,7 @@ class VideoPage extends StatelessWidget {
     return FutureBuilder(
       future: _getVideos(),
       builder: (context, snapshot) {
+        print(snapshot.connectionState);
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             body: const Center(
@@ -35,6 +33,7 @@ class VideoPage extends StatelessWidget {
             child: ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) => MyVideosCard(
+                isPurchased: true,
                 myVideos: snapshot.data![index],
               ),
             ),

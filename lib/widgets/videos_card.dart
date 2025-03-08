@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 
 class MyVideosCard extends StatefulWidget {
-  const MyVideosCard({super.key, required this.myVideos});
+  const MyVideosCard(
+      {super.key, required this.myVideos, required this.isPurchased});
   final Map<String, dynamic> myVideos;
+  final bool isPurchased;
 
   @override
   State<MyVideosCard> createState() => _MyVideosCardState();

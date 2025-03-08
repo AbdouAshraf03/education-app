@@ -96,7 +96,7 @@ class FirebaseRetrieve {
       for (var video in videos) {
         videosList.add(video.data());
       }
-      // print(videosList);
+      //print(videosList);
       return videosList;
     } catch (e) {
       print(e.toString() + ' =======================');
@@ -115,7 +115,7 @@ class FirebaseRetrieve {
           await _getVideoData(video['video_id'], graduate, video['section']);
       videosData.add(data);
     }
-    // print(videosData);
+
     return videosData;
   }
 
