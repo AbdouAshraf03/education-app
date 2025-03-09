@@ -71,8 +71,13 @@ class AppRoutes {
       // PurchasePage
       case purchasePage:
         final routeArg = settings.arguments as Map<String, dynamic>;
+        final isPurchased = routeArg['isPurchased'];
+        final section = routeArg['section'];
         return MaterialPageRoute(
-            builder: (context) => PurchasePage(routeArg: routeArg));
+            builder: (context) => PurchasePage(
+                  routeArg: routeArg,
+                  isPurchased: isPurchased,
+                ));
       // PurchasePage
       case profilePage:
         return MaterialPageRoute(builder: (context) => ProfilePage());

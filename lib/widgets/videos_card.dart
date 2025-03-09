@@ -3,34 +3,27 @@ import 'package:mr_samy_elmalah/core/app_routes.dart';
 
 class MyVideosCard extends StatefulWidget {
   const MyVideosCard(
-      {super.key, required this.myVideos, required this.isPurchased});
+      {super.key,
+      required this.myVideos,
+      required this.isPurchased,
+      required this.section});
   final Map<String, dynamic> myVideos;
   final bool isPurchased;
-
+  final String section;
   @override
   State<MyVideosCard> createState() => _MyVideosCardState();
 }
 
 class _MyVideosCardState extends State<MyVideosCard>
     with SingleTickerProviderStateMixin {
-  // final Map<String, dynamic> myVideos = {
-  //   'title':
-  //       'ديناميكا التكنولوجيا الإلكترونية في الأداء البيئي والإنتاج البيئي',
-  //   'long_of_vid': 6,
-  //   'no_of_vid': 3,
-  //   'price': 60,
-  //   'imageurl': 'assets/images/ORFF360.jpg',
-  //   'vid_code': 'ORFF360',
-  //   'video_url': [],
-  //   'image_url': ''
-  // };
-
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
-    print(widget.myVideos);
+    widget.myVideos
+        .addAll({'isPurchased': widget.isPurchased, 'section': widget.section});
+    //print(widget.myVideos);
     super.initState();
     _controller = AnimationController(
       vsync: this,
