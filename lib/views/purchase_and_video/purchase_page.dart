@@ -1,14 +1,22 @@
+// import 'package:awesome_dialog/awesome_dialog.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mr_samy_elmalah/core/app_routes.dart';
+import 'package:mr_samy_elmalah/data/purchased_service.dart';
 import 'package:mr_samy_elmalah/widgets/custom_drawer.dart';
 import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
+import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
+// import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
 class PurchasePage extends StatelessWidget {
-  const PurchasePage({super.key, required this.routeArg});
+  const PurchasePage(
+      {super.key, required this.routeArg, required this.isPurchased});
   final Map<String, dynamic> routeArg;
   static final TextEditingController _textFieldController =
       TextEditingController();
+  final dynamic isPurchased;
   Future<void> _displayTextInputDialog(BuildContext context) async {
     return showDialog(
       context: context,
@@ -16,7 +24,7 @@ class PurchasePage extends StatelessWidget {
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            'ادخل كود المحاضرة',
+            'ادخل كود الشراء',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   fontFamily: 'roboto',
@@ -65,8 +73,40 @@ class PurchasePage extends StatelessWidget {
             ElevatedButton(
               child: Text('OK'),
               onPressed: () {
-                print(_textFieldController.text);
-                Navigator.pop(context);
+                // Navigator.pop(context);
+                PurchasedService()
+                    .isValidCode(_textFieldController.text, context)
+                    .then((value) {
+                  if (value) {
+                    if (context.mounted) {
+                      PurchasedService()
+                          .purchasedCode(
+                              _textFieldController.text,
+                              routeArg['vid_code'],
+                              routeArg['section'],
+                              context)
+                          .then((value) {
+                        if (value) {
+                          if (context.mounted) {
+                            CustomDialog(
+                                    title: 'Success',
+                                    desc: "تم شراء المحاضرة بنجاح",
+                                    dialogType: DialogType.success)
+                                .showdialog(context);
+                          }
+                        }
+                      });
+                    }
+                  } else {
+                    if (context.mounted) {
+                      CustomDialog(
+                              title: 'error',
+                              desc: "تم استخدام الكود مسبقًا",
+                              dialogType: DialogType.error)
+                          .showdialog(context);
+                    }
+                  }
+                });
               },
             ),
           ],
@@ -77,6 +117,7 @@ class PurchasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(routeArg);
     return Scaffold(
       endDrawer: const MyDrawer(),
       appBar: AppBar(
@@ -94,7 +135,7 @@ class PurchasePage extends StatelessWidget {
         actions: [
           Center(
             child: Text(
-              "شراء المحاضرة",
+              !isPurchased ? "شراء المحاضرة" : "المحاضرة",
               // textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
@@ -149,34 +190,38 @@ class PurchasePage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               //! mony
-              SizedBox(
-                width: MediaQuery.of(context).size.width - 40,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      routeArg['price'].toString(),
-                      textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      ': سعر المحاضرة ',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Theme.of(context).primaryColor),
-                    ),
-                  ],
-                ),
-              ),
+              !isPurchased
+                  ? SizedBox(
+                      width: MediaQuery.of(context).size.width - 40,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            routeArg['price'].toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            ': سعر المحاضرة ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Theme.of(context).primaryColor),
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox.shrink(),
               SizedBox(height: 20),
               //! purchase bottom
               MaterialButton(
                 onPressed: () {
-                  _displayTextInputDialog(context);
+                  if (!isPurchased) {
+                    _displayTextInputDialog(context);
+                  }
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -185,7 +230,7 @@ class PurchasePage extends StatelessWidget {
                 minWidth: MediaQuery.of(context).size.width - 40,
                 color: Theme.of(context).primaryColor,
                 child: Text(
-                  'شراء المحاضره',
+                  !isPurchased ? 'شراء المحاضره' : 'مشاهدة المحاضرة',
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
@@ -214,14 +259,21 @@ class PurchasePage extends StatelessWidget {
                         children: [
                           ListTile(
                             onTap: () {
-                              Navigator.pushNamed(
-                                  context, AppRoutes.videoPlayerPage,
-                                  arguments: routeArg['video_url']![index]);
+                              isPurchased
+                                  ? Navigator.pushNamed(
+                                      context, AppRoutes.videoPlayerPage,
+                                      arguments: routeArg['video_url']![index])
+                                  : null;
                             },
                             title: Text(
                               'part ${index + 1}',
                               textAlign: TextAlign.end,
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    fontFamily: 'roboto',
+                                  ),
                             ),
                             trailing: Container(
                               decoration: BoxDecoration(
