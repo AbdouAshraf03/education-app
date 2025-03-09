@@ -10,4 +10,18 @@ class FirebaseImport {
         .doc(uid)
         .set({'id': uid, 'userMainData': mainUserData, 'userCodes': []});
   }
+
+  Future<void> importVideoData(String videoId, String section) async {
+    try {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      await FirebaseFirestore.instance
+          .collection('students')
+          .doc(uid)
+          .collection('user_vid')
+          .doc(videoId)
+          .set({'video_id': videoId, 'section': section});
+    } catch (e) {
+      print(e);
+    }
+  }
 }
