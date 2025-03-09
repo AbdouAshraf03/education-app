@@ -35,17 +35,20 @@ class MyDrawer extends StatelessWidget {
                     // print(snapshot.data![1]);
                   } else {
                     return UserAccountsDrawerHeader(
-                      accountName: Text(snapshot.data![1],
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  )),
+                      accountName: Text(
+                        snapshot.data![1],
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'roboto',
+                            ),
+                      ),
                       accountEmail: Text(
                         snapshot.data![0],
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
+                              fontFamily: 'roboto',
                             ),
                       ),
                       // currentAccountPicture: CircleAvatar(
