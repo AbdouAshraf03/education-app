@@ -101,7 +101,7 @@ class PurchasePage extends StatelessWidget {
                     if (context.mounted) {
                       CustomDialog(
                               title: 'error',
-                              desc: "تم استخدام الكود مسبقًا",
+                              desc: "او الكود غير صحيح تم استخدام الكود مسبقًا",
                               dialogType: DialogType.error)
                           .showdialog(context);
                     }
@@ -117,7 +117,6 @@ class PurchasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(routeArg);
     return Scaffold(
       endDrawer: const MyDrawer(),
       appBar: AppBar(

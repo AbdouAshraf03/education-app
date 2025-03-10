@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mr_samy_elmalah/data/firebase_retrieve.dart';
-import 'package:mr_samy_elmalah/widgets/custom_drawer.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 import 'package:mr_samy_elmalah/widgets/videos_card.dart';
 
@@ -18,7 +17,6 @@ class VideoPage extends StatelessWidget {
     return FutureBuilder(
       future: _getVideos(),
       builder: (context, snapshot) {
-        print(snapshot.connectionState);
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             body: const Center(

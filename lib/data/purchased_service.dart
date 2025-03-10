@@ -11,7 +11,11 @@ class PurchasedService {
     try {
       var snapshot =
           await FirebaseFirestore.instance.collection('codes').doc(code).get();
-      return snapshot.data()!['user_id'] == "";
+      if (snapshot.exists) {
+        return snapshot.data()!['user_id'] == "";
+      } else {
+        return false;
+      }
     } on FirebaseException catch (e) {
       if (context.mounted) {
         CustomDialog(title: 'error', desc: e.code, dialogType: DialogType.error)
@@ -28,7 +32,8 @@ class PurchasedService {
       var snapshot =
           await FirebaseFirestore.instance.collection('codes').doc(code).get();
       await snapshot.reference.update({'user_id': uid});
-      await FirebaseImport().importVideoData(videoCode, section);
+      bool exists = await FirebaseImport().importVideoData(videoCode, section);
+      if (!exists) return false;
       return true;
     } on FirebaseException catch (e) {
       if (context.mounted) {

@@ -1,6 +1,8 @@
+// import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase_core/firebase_core.dart';
+// import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
+// import 'package:firebase_core/firebase_core.dart';
 
 class FirebaseImport {
   final String? uid = FirebaseAuth.instance.currentUser?.uid;
@@ -11,17 +13,23 @@ class FirebaseImport {
         .set({'id': uid, 'userMainData': mainUserData, 'userCodes': []});
   }
 
-  Future<void> importVideoData(String videoId, String section) async {
+  Future<bool> importVideoData(String videoId, String section) async {
     try {
       String uid = FirebaseAuth.instance.currentUser!.uid;
-      await FirebaseFirestore.instance
+      var snapshot = await FirebaseFirestore.instance
           .collection('students')
           .doc(uid)
           .collection('user_vid')
           .doc(videoId)
-          .set({'video_id': videoId, 'section': section});
+          .get();
+      if (!snapshot.exists) {
+        snapshot.reference.set({'id': videoId, 'section': section});
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
-      print(e);
+      return false;
     }
   }
 }
