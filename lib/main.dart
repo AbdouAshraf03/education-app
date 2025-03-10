@@ -7,11 +7,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mr_samy_elmalah/views/auth_pages/log_in_page.dart';
 import 'package:mr_samy_elmalah/views/main_pages/main_page.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
   await Firebase.initializeApp();
+  await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
   runApp(MyApp());
 }
 
