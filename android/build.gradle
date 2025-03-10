@@ -4,10 +4,13 @@ allprojects {
         mavenCentral()
     }
 }
-
-// dependencies {
-//         classpath 'com.google.gms:google-services:4.3.15'  // ✅ Ensure this version is here
-// }
+subprojects{
+    afterEvaluate {
+        android {
+            namespace 'com.example.mr_samy_elmalah'
+        }
+    }
+}
 rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
