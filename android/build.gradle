@@ -4,13 +4,6 @@ allprojects {
         mavenCentral()
     }
 }
-subprojects{
-    afterEvaluate {
-        android {
-            namespace 'com.example.mr_samy_elmalah'
-        }
-    }
-}
 rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
