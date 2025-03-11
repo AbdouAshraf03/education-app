@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 
 class MyVideosCard extends StatefulWidget {
-  const MyVideosCard(
-      {super.key,
-      required this.myVideos,
-      required this.isPurchased,
-      required this.section,
-      Future<List<Map<String, dynamic>>>? mainMyVideosData});
+  const MyVideosCard({
+    super.key,
+    required this.myVideos,
+    required this.isPurchased,
+    required this.section,
+  });
   final Map<String, dynamic> myVideos;
   final bool isPurchased;
   final String section;
@@ -24,8 +24,7 @@ class _MyVideosCardState extends State<MyVideosCard>
   void initState() {
     widget.myVideos.addAll({
       'isPurchased': widget.isPurchased,
-      'section': widget.section,
-      'purchased_data': widget.myVideos['purchased_data']
+      // 'section': widget.section,
     });
     //print(widget.myVideos);
     super.initState();

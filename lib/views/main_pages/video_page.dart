@@ -11,6 +11,9 @@ class VideoPage extends StatelessWidget {
   Future<List?> _getVideos() async {
     var data = await _getMyVideos();
     List videosData = await FirebaseRetrieve().getMyVideosFromList(data);
+    for (int i = 0; i < videosData.length; i++) {
+      videosData[i].addAll({'purchased_date': data[i]['purchased_date']});
+    }
     return videosData;
   }
 
@@ -37,7 +40,7 @@ class VideoPage extends StatelessWidget {
                 section: '',
                 isPurchased: true,
                 myVideos: snapshot.data![index],
-                mainMyVideosData: _getMyVideos(),
+                // mainMyVideosData: s,
               ),
             ),
           );

@@ -1,6 +1,7 @@
 // import 'package:awesome_dialog/awesome_dialog.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mr_samy_elmalah/core/app_routes.dart';
@@ -122,17 +123,11 @@ class _PurchasePageState extends State<PurchasePage> {
     );
   }
 
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    PurchasePage._textFieldController.dispose();
-    super.dispose();
-  }
-
   int _getTimeRemaining(DateTime purchasedDate) {
     DateTime now = DateTime.now();
-    int timeRemaining = purchasedDate.difference(now).inDays;
-    return timeRemaining;
+    int max = 3;
+    var timeRemaining = purchasedDate.difference(now);
+    return max - timeRemaining.inDays;
   }
 
   @override
@@ -217,8 +212,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     Text(
                       !widget.isPurchased
                           ? widget.routeArg['price']
-                          : _getTimeRemaining(widget.routeArg['purchased_date'])
-                              .toString(),
+                          : '(ايام ${_getTimeRemaining((widget.routeArg['purchased_date'] as Timestamp).toDate()).toString()} )',
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
