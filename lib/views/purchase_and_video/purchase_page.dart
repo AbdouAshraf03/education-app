@@ -10,13 +10,19 @@ import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 // import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
-class PurchasePage extends StatelessWidget {
+class PurchasePage extends StatefulWidget {
   const PurchasePage(
       {super.key, required this.routeArg, required this.isPurchased});
   final Map<String, dynamic> routeArg;
   static final TextEditingController _textFieldController =
       TextEditingController();
   final dynamic isPurchased;
+
+  @override
+  State<PurchasePage> createState() => _PurchasePageState();
+}
+
+class _PurchasePageState extends State<PurchasePage> {
   Future<void> _displayTextInputDialog(BuildContext context) async {
     return showDialog(
       context: context,
@@ -31,7 +37,7 @@ class PurchasePage extends StatelessWidget {
                 ),
           ),
           content: TextField(
-            controller: _textFieldController,
+            controller: PurchasePage._textFieldController,
             keyboardType: TextInputType.multiline,
             //obscureText: passwordVisible,
             enableSuggestions: false,
@@ -75,15 +81,16 @@ class PurchasePage extends StatelessWidget {
               onPressed: () {
                 // Navigator.pop(context);
                 PurchasedService()
-                    .isValidCode(_textFieldController.text, context)
+                    .isValidCode(
+                        PurchasePage._textFieldController.text, context)
                     .then((value) {
                   if (value) {
                     if (context.mounted) {
                       PurchasedService()
                           .purchasedCode(
-                              _textFieldController.text,
-                              routeArg['vid_code'],
-                              routeArg['section'],
+                              PurchasePage._textFieldController.text,
+                              widget.routeArg['vid_code'],
+                              widget.routeArg['section'],
                               context)
                           .then((value) {
                         if (value) {
@@ -116,6 +123,19 @@ class PurchasePage extends StatelessWidget {
   }
 
   @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    PurchasePage._textFieldController.dispose();
+    super.dispose();
+  }
+
+  int _getTimeRemaining(DateTime purchasedDate) {
+    DateTime now = DateTime.now();
+    int timeRemaining = purchasedDate.difference(now).inDays;
+    return timeRemaining;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       endDrawer: const MyDrawer(),
@@ -134,7 +154,7 @@ class PurchasePage extends StatelessWidget {
         actions: [
           Center(
             child: Text(
-              !isPurchased ? "شراء المحاضرة" : "المحاضرة",
+              !widget.isPurchased ? "شراء المحاضرة" : "المحاضرة",
               // textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
@@ -172,7 +192,7 @@ class PurchasePage extends StatelessWidget {
                   ),
                   image: DecorationImage(
                     image: NetworkImage(
-                      routeArg['image_url'],
+                      widget.routeArg['image_url'],
                     ),
                   ),
                 ),
@@ -182,43 +202,46 @@ class PurchasePage extends StatelessWidget {
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: Text(
-                  routeArg['title'],
+                  widget.routeArg['title'],
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                 ),
               ),
               SizedBox(height: 20),
               //! mony
-              !isPurchased
-                  ? SizedBox(
-                      width: MediaQuery.of(context).size.width - 40,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            routeArg['price'].toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            ': سعر المحاضرة ',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: Theme.of(context).primaryColor),
-                          ),
-                        ],
-                      ),
-                    )
-                  : const SizedBox.shrink(),
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      !widget.isPurchased
+                          ? widget.routeArg['price']
+                          : _getTimeRemaining(widget.routeArg['purchased_date'])
+                              .toString(),
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      !widget.isPurchased
+                          ? ': سعر المحاضرة '
+                          : 'متبقي من الوقت',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Theme.of(context).primaryColor),
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(height: 20),
               //! purchase bottom
               MaterialButton(
                 onPressed: () {
-                  if (!isPurchased) {
+                  if (!widget.isPurchased) {
                     _displayTextInputDialog(context);
                   }
                 },
@@ -227,13 +250,29 @@ class PurchasePage extends StatelessWidget {
                 ),
                 height: 45,
                 minWidth: MediaQuery.of(context).size.width - 40,
-                color: Theme.of(context).primaryColor,
-                child: Text(
-                  !isPurchased ? 'شراء المحاضره' : 'مشاهدة المحاضرة',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
+                color: widget.isPurchased
+                    ? Colors.green
+                    : Theme.of(context).primaryColor,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width - 100,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        !widget.isPurchased
+                            ? 'شراء المحاضره'
+                            : 'تم شراء المحاضرة',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Icon(Icons.check),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: 45),
@@ -252,16 +291,17 @@ class PurchasePage extends StatelessWidget {
               SizedBox(
                 height: 250,
                 child: ListView.builder(
-                    itemCount: routeArg['video_url']!.length,
+                    itemCount: widget.routeArg['video_url']!.length,
                     itemBuilder: (context, index) {
                       return Column(
                         children: [
                           ListTile(
                             onTap: () {
-                              isPurchased
+                              widget.isPurchased
                                   ? Navigator.pushNamed(
                                       context, AppRoutes.videoPlayerPage,
-                                      arguments: routeArg['video_url']![index])
+                                      arguments:
+                                          widget.routeArg['video_url']![index])
                                   : null;
                             },
                             title: Text(

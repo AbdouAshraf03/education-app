@@ -6,8 +6,10 @@ import 'package:mr_samy_elmalah/widgets/videos_card.dart';
 class VideoPage extends StatelessWidget {
   const VideoPage({super.key});
 
+  Future<List<Map<String, dynamic>>> _getMyVideos() async =>
+      await FirebaseRetrieve().getMyVideos();
   Future<List?> _getVideos() async {
-    var data = await FirebaseRetrieve().getMyVideos();
+    var data = await _getMyVideos();
     List videosData = await FirebaseRetrieve().getMyVideosFromList(data);
     return videosData;
   }
@@ -35,6 +37,7 @@ class VideoPage extends StatelessWidget {
                 section: '',
                 isPurchased: true,
                 myVideos: snapshot.data![index],
+                mainMyVideosData: _getMyVideos(),
               ),
             ),
           );

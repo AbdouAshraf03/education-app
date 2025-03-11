@@ -173,7 +173,7 @@ class MyDrawer extends StatelessWidget {
                       )),
               // leading: ,
               onTap: () {
-                FirebaseRetrieve().getMyVideos();
+                //  FirebaseRetrieve().getMyVideos();
                 Navigator.pushReplacementNamed(context, AppRoutes.mainPage,
                     arguments: 2);
               },

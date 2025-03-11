@@ -10,7 +10,7 @@ class FirebaseImport {
     await FirebaseFirestore.instance
         .collection('students')
         .doc(uid)
-        .set({'id': uid, 'userMainData': mainUserData, 'userCodes': []});
+        .set({'id': uid, 'userMainData': mainUserData});
   }
 
   Future<bool> importVideoData(String videoId, String section) async {
@@ -23,7 +23,11 @@ class FirebaseImport {
           .doc(videoId)
           .get();
       if (!snapshot.exists) {
-        snapshot.reference.set({'id': videoId, 'section': section});
+        snapshot.reference.set({
+          'id': videoId,
+          'section': section,
+          'purchased_data': DateTime.now()
+        });
         return true;
       } else {
         return false;

@@ -6,7 +6,8 @@ class MyVideosCard extends StatefulWidget {
       {super.key,
       required this.myVideos,
       required this.isPurchased,
-      required this.section});
+      required this.section,
+      Future<List<Map<String, dynamic>>>? mainMyVideosData});
   final Map<String, dynamic> myVideos;
   final bool isPurchased;
   final String section;
@@ -21,8 +22,11 @@ class _MyVideosCardState extends State<MyVideosCard>
 
   @override
   void initState() {
-    widget.myVideos
-        .addAll({'isPurchased': widget.isPurchased, 'section': widget.section});
+    widget.myVideos.addAll({
+      'isPurchased': widget.isPurchased,
+      'section': widget.section,
+      'purchased_data': widget.myVideos['purchased_data']
+    });
     //print(widget.myVideos);
     super.initState();
     _controller = AnimationController(
