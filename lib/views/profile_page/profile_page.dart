@@ -1,6 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
+import 'package:mr_samy_elmalah/data/firebase_retrieve.dart';
 import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
 import 'package:mr_samy_elmalah/widgets/custom_text_field.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
@@ -44,6 +46,8 @@ class ProfilePage extends StatelessWidget {
   ];
   bool isLoading = false;
   dynamic _selectedGrade;
+
+  Future<Map?> _getUserData() => FirebaseRetrieve().getUserData();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,158 +80,193 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width - 20,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  //! image logo
-                  // Container(
-                  //     height: 100,
-                  //     width: 100,
-                  //     decoration: const BoxDecoration(
-                  //         color: Colors.blue,
-                  //         borderRadius: BorderRadius.only())),
-                  // const SizedBox(height: 20),
-                  //! title
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Text(
-                      //   '∫',
-                      //   style: TextStyle(
-                      //       fontSize: 40,
-                      //       fontFamily: 'vip_hala',
-                      //       color: Color.fromARGB(255, 28, 113, 194)),
-                      // ),
-                      Text('الملف الشخصي',
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontFamily: 'vip_hala',
-                                    fontSize: 24,
-                                  )),
-                      // Text(
-                      //   'dx',
-                      //   style: TextStyle(
-                      //       fontSize: 22,
-                      //       fontFamily: 'vip_hala',
-                      //       color: Color.fromARGB(255, 28, 113, 194)),
-                      // ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  //! first name
-                  CustomTextField(
-                    keyboardType: TextInputType.name,
-                    labelText: 'الاسم الاول',
-                    controller: _fnameController,
-                    icon: Iconsax.user,
-                  ),
-                  const SizedBox(height: 20),
-                  //! last name
-                  CustomTextField(
-                    keyboardType: TextInputType.name,
-                    labelText: 'اسم العائلة',
-                    controller: _lnameController,
-                    icon: Iconsax.people,
-                  ),
-                  const SizedBox(height: 20),
-                  //! grade
-                  // DropdownButton<int>(
-                  //   items: grades,
-                  //   value: _selectedGrade,
-                  //   itemHeight: 55,
-                  //   isExpanded: true,
-                  //   menuWidth: MediaQuery.of(context).size.width - 20,
-                  //   borderRadius: BorderRadius.circular(10),
-                  //   onChanged: (value) {
-                  //     value = _selectedGrade;
-                  //     print(_selectedGrade);
-                  //   },
-                  // ),
-                  DropdownMenu(
-                      dropdownMenuEntries: _grades,
-                      initialSelection: _selectedGrade,
-                      width: MediaQuery.of(context).size.width - 20,
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                      inputDecorationTheme: InputDecorationTheme(
-                        labelStyle: const TextStyle(fontFamily: 'ge_ss'),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      menuStyle: MenuStyle(
-                          shape:
-                              WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      )),
-                      label: Text('الصف الدراسي',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey)),
-                      leadingIcon: Icon(Iconsax.book_1, color: Colors.grey),
-                      onSelected: (value) => _selectedGrade = value),
-                  const SizedBox(height: 20),
-                  //! phone
-                  CustomTextField(
-                    keyboardType: TextInputType.phone,
-                    labelText: 'رقم الهاتف',
-                    controller: _phoneController,
-                    icon: Iconsax.call_add,
-                  ),
-                  const SizedBox(height: 20),
-                  //! email
-                  CustomTextField(
-                    keyboardType: TextInputType.emailAddress,
-                    labelText: 'الأيميل',
-                    controller: _emailController,
-                    icon: Iconsax.paperclip_copy,
-                  ),
-                  const SizedBox(height: 20),
-                  //! code
-                  _buildCustomtextfield(context),
-                  const SizedBox(height: 20),
-                  //! sgin up button
-                  MaterialButton(
-                      height: 55,
-                      minWidth: MediaQuery.of(context).size.width - 20,
-                      color: Color.fromARGB(255, 28, 113, 194),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      onPressed: () {
-                        ///
-                        isLoading = true;
+      body: FutureBuilder(
+          future: _getUserData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Scaffold(
+                body: const Center(
+                  child: LottieLoader(),
+                ),
+              );
+            }
+            if (snapshot.hasError) {
+              return Scaffold(
+                body: const Center(
+                  child: LottieError(),
+                ),
+              );
+            }
+            if (snapshot.hasData) {
+              final data = snapshot.data!;
+              _emailController.text = data['email'];
+              _fnameController.text = data['fname'];
+              _lnameController.text = data['lname'];
+              _phoneController.text = data['phoneNumber'];
+              _selectedGrade = int.parse(data['graduate']);
+              return SingleChildScrollView(
+                child: Center(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width - 20,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          //! image logo
+                          // Container(
+                          //     height: 100,
+                          //     width: 100,
+                          //     decoration: const BoxDecoration(
+                          //         color: Colors.blue,
+                          //         borderRadius: BorderRadius.only())),
+                          // const SizedBox(height: 20),
+                          //! title
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Text(
+                              //   '∫',
+                              //   style: TextStyle(
+                              //       fontSize: 40,
+                              //       fontFamily: 'vip_hala',
+                              //       color: Color.fromARGB(255, 28, 113, 194)),
+                              // ),
+                              Text('الملف الشخصي',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        fontFamily: 'vip_hala',
+                                        fontSize: 24,
+                                      )),
+                              // Text(
+                              //   'dx',
+                              //   style: TextStyle(
+                              //       fontSize: 22,
+                              //       fontFamily: 'vip_hala',
+                              //       color: Color.fromARGB(255, 28, 113, 194)),
+                              // ),
+                            ],
+                          ),
+                          const SizedBox(height: 30),
+                          //! first name
+                          CustomTextField(
+                            keyboardType: TextInputType.name,
+                            labelText: 'الاسم الاول',
+                            controller: _fnameController,
+                            icon: Iconsax.user,
+                          ),
+                          const SizedBox(height: 20),
+                          //! last name
+                          CustomTextField(
+                            keyboardType: TextInputType.name,
+                            labelText: 'اسم العائلة',
+                            controller: _lnameController,
+                            icon: Iconsax.people,
+                          ),
+                          const SizedBox(height: 20),
+                          //! grade
+                          // DropdownButton<int>(
+                          //   items: grades,
+                          //   value: _selectedGrade,
+                          //   itemHeight: 55,
+                          //   isExpanded: true,
+                          //   menuWidth: MediaQuery.of(context).size.width - 20,
+                          //   borderRadius: BorderRadius.circular(10),
+                          //   onChanged: (value) {
+                          //     value = _selectedGrade;
+                          //     print(_selectedGrade);
+                          //   },
+                          // ),
+                          DropdownMenu(
+                              dropdownMenuEntries: _grades,
+                              initialSelection: _selectedGrade,
+                              width: MediaQuery.of(context).size.width - 20,
+                              textStyle: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                              inputDecorationTheme: InputDecorationTheme(
+                                labelStyle:
+                                    const TextStyle(fontFamily: 'ge_ss'),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              menuStyle: MenuStyle(
+                                  shape: WidgetStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              )),
+                              label: Text('الصف الدراسي',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey)),
+                              leadingIcon:
+                                  Icon(Iconsax.book_1, color: Colors.grey),
+                              onSelected: (value) => _selectedGrade = value),
+                          const SizedBox(height: 20),
+                          //! phone
+                          CustomTextField(
+                            keyboardType: TextInputType.phone,
+                            labelText: 'رقم الهاتف',
+                            controller: _phoneController,
+                            icon: Iconsax.call_add,
+                          ),
+                          const SizedBox(height: 20),
+                          //! email
+                          CustomTextField(
+                            keyboardType: TextInputType.emailAddress,
+                            labelText: 'الأيميل',
+                            controller: _emailController,
+                            icon: Iconsax.paperclip_copy,
+                          ),
+                          const SizedBox(height: 20),
+                          //! code
+                          _buildCustomtextfield(context),
+                          const SizedBox(height: 20),
+                          //! sgin up button
+                          MaterialButton(
+                              height: 55,
+                              minWidth: MediaQuery.of(context).size.width - 20,
+                              color: Color.fromARGB(255, 28, 113, 194),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              onPressed: () {
+                                ///
+                                isLoading = true;
 
-                        ///
-                      },
-                      child: isLoading
-                          ? SizedBox(
-                              height: 40,
-                              width: 40,
-                              child: LottieLoader(),
-                            )
-                          : const Text('تعديل',
-                              style: TextStyle(
-                                fontFamily: 'vip_hala',
-                                color: Colors.white,
-                              ))),
-                  const SizedBox(height: 40),
-                ]),
-          ),
-        ),
-      ),
+                                ///
+                              },
+                              child: isLoading
+                                  ? SizedBox(
+                                      height: 40,
+                                      width: 40,
+                                      child: LottieLoader(),
+                                    )
+                                  : const Text('تعديل',
+                                      style: TextStyle(
+                                        fontFamily: 'vip_hala',
+                                        color: Colors.white,
+                                      ))),
+                          const SizedBox(height: 40),
+                        ]),
+                  ),
+                ),
+              );
+            }
+            return Scaffold(
+              body: const Center(
+                child: LottieNoData(),
+              ),
+            );
+          }),
     );
   }
 

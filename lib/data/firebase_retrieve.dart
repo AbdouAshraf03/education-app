@@ -48,8 +48,23 @@ class FirebaseRetrieve {
       ];
     } catch (e) {
       print(e);
+      return null;
     }
-    return ['Null', 'Null'];
+    // return ['Null', 'Null'];
+  }
+
+  Future<Map?> getUserData() async {
+    try {
+      final String uid = FirebaseAuth.instance.currentUser!.uid;
+      var userData = await FirebaseFirestore.instance
+          .collection('students')
+          .doc(uid)
+          .get();
+      return userData.data()!['userMainData'];
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
 // <<<<<<< HEAD
