@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:mr_samy_elmalah/core/app_routes.dart';
 
 import 'package:mr_samy_elmalah/views/main_pages/ai_page.dart';
 import 'package:mr_samy_elmalah/views/main_pages/home_page.dart';
@@ -13,24 +14,30 @@ class AppBarConfig {
   final String title;
   final List<Widget>? actions;
   final Widget? leading;
+  final BuildContext context;
 
-  AppBarConfig({required this.title, this.actions, this.leading});
+  AppBarConfig(
+      {required this.title, this.actions, this.leading, required this.context});
 }
 
 class HomeViewModel {
+  final BuildContext context;
   ValueNotifier<int> currentIndex = ValueNotifier(0);
   final List<Widget> pages = [
     const HomePage(),
     AiPage(),
     const VideoPage(),
   ];
-
+  HomeViewModel(this.context);
   List<AppBarConfig> get appBarConfigs => [
         AppBarConfig(
+          context: context,
           leading: _buildHomeLeading(),
           actions: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.searchPage);
+                },
                 icon: const Icon(
                   Iconsax.search_normal_1_copy,
                 )),
@@ -39,10 +46,12 @@ class HomeViewModel {
           title: 'الصفحه الرئيسية',
         ),
         AppBarConfig(
+          context: context,
           title: 'AI',
           actions: [AnimatedMenuButton()],
         ),
         AppBarConfig(
+          context: context,
           title: 'محاضراتي',
           actions: [AnimatedMenuButton()],
         ),
@@ -83,8 +92,13 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final HomeViewModel _viewModel = HomeViewModel();
+  late final HomeViewModel _viewModel;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  @override
+  void initState() {
+    _viewModel = HomeViewModel(context);
+    super.initState();
+  }
 
   @override
   void dispose() {

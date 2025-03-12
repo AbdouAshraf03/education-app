@@ -4,6 +4,7 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/data/firebase_import.dart';
 import 'package:mr_samy_elmalah/data/firebase_retrieve.dart';
+import 'package:mr_samy_elmalah/widgets/custom_drawer.dart';
 import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
 import 'package:mr_samy_elmalah/widgets/custom_text_field.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
@@ -51,23 +52,24 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: MyDrawer(),
       appBar: AppBar(
         shadowColor: Colors.transparent,
         centerTitle: false,
         actions: [
-          Center(
-            child: Text(
-              "الاقسام",
-              // textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
-          SizedBox(width: 20),
-          Icon(Iconsax.book_copy, color: Theme.of(context).primaryColor),
-          SizedBox(width: 20),
+          // Center(
+          //   child: Text(
+          //     "الاقسام",
+          //     // textAlign: TextAlign.center,
+          //     style: Theme.of(context)
+          //         .textTheme
+          //         .bodyMedium!
+          //         .copyWith(fontWeight: FontWeight.bold),
+          //   ),
+          // ),
+          // SizedBox(width: 20),
+          // Icon(Iconsax.book_copy, color: Theme.of(context).primaryColor),
+          // SizedBox(width: 20),
           AnimatedMenuButton()
         ],
         leading: IconButton(
@@ -103,7 +105,7 @@ class ProfilePage extends StatelessWidget {
               _fnameController.text = data['fname'];
               _lnameController.text = data['lname'];
               _phoneController.text = data['phoneNumber'];
-              _selectedGrade = int.parse(data['graduate']);
+              _selectedGrade = data['graduate'];
               _codeController.text = data['id'];
               return SingleChildScrollView(
                 child: Center(
@@ -221,56 +223,80 @@ class ProfilePage extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           //! email
-                          CustomTextField(
-                            keyboardType: TextInputType.emailAddress,
-                            labelText: 'الأيميل',
-                            controller: _emailController,
-                            icon: Iconsax.paperclip_copy,
-                          ),
+                          _buildCustomtextfield(
+                              context, 'الأيميل', _emailController),
                           const SizedBox(height: 20),
                           //! code
-                          _buildCustomtextfield(context),
+                          _buildCustomtextfield(
+                              context, 'كود الطالب', _codeController),
                           const SizedBox(height: 20),
                           //! sgin up button
-                          MaterialButton(
-                              height: 55,
-                              minWidth: MediaQuery.of(context).size.width - 20,
-                              color: Color.fromARGB(255, 28, 113, 194),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              onPressed: () async {
-                                ///
-                                isLoading = true;
-                                bool edited = await FirebaseImport()
-                                    .editProfile(
-                                        _emailController.text,
-                                        _fnameController.text,
-                                        _lnameController.text,
-                                        _phoneController.text,
-                                        _selectedGrade);
-                                isLoading = false;
-                                if (edited) {
-                                  CustomDialog(
-                                          title: 'تم',
-                                          desc: 'تم التعديل',
-                                          dialogType: DialogType.success)
-                                      .showdialog(context);
-                                }
+                          StatefulBuilder(
+                            builder: (context, setState) {
+                              return MaterialButton(
+                                height: 55,
+                                minWidth:
+                                    MediaQuery.of(context).size.width - 20,
+                                color: Color.fromARGB(255, 28, 113, 194),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                onPressed: () async {
+                                  ///
+                                  setState(() {
+                                    isLoading = true;
+                                  });
 
-                                ///
-                              },
-                              child: isLoading
-                                  ? SizedBox(
-                                      height: 40,
-                                      width: 40,
-                                      child: LottieLoader(),
-                                    )
-                                  : const Text('تعديل',
-                                      style: TextStyle(
-                                        fontFamily: 'vip_hala',
-                                        color: Colors.white,
-                                      ))),
+                                  bool edited = await FirebaseImport()
+                                      .editProfile(
+                                          _emailController.text,
+                                          _fnameController.text,
+                                          _lnameController.text,
+                                          _phoneController.text,
+                                          _selectedGrade);
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                  if (edited && context.mounted) {
+                                    CustomDialog(
+                                            title: 'تم',
+                                            desc: 'تم التعديل',
+                                            dialogType: DialogType.success)
+                                        .showdialog(context);
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                  } else {
+                                    if (context.mounted) {
+                                      CustomDialog(
+                                              title: 'خطأ',
+                                              desc: ' حدث خطأ ما ',
+                                              dialogType: DialogType.error)
+                                          .showdialog(context);
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                    }
+                                  }
+
+                                  ///
+                                },
+                                child: isLoading
+                                    ? SizedBox(
+                                        height: 40,
+                                        width: 40,
+                                        child: LottieLoader(),
+                                      )
+                                    : const Text(
+                                        'تعديل',
+                                        style: TextStyle(
+                                          fontFamily: 'vip_hala',
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                              );
+                            },
+                          ),
                           const SizedBox(height: 40),
                         ]),
                   ),
@@ -286,10 +312,11 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomtextfield(BuildContext context) {
+  Widget _buildCustomtextfield(
+      BuildContext context, String title, TextEditingController controller) {
     return TextField(
       enabled: false,
-      controller: _codeController,
+      controller: controller,
       keyboardType: TextInputType.emailAddress,
       //obscureText: passwordVisible,
       enableSuggestions: false,
@@ -311,7 +338,7 @@ class ProfilePage extends StatelessWidget {
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
         ),
-        labelText: 'كود الطالب',
+        labelText: title,
         labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.bold,
               fontSize: 16,
