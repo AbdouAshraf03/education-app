@@ -1,7 +1,8 @@
-import 'package:firebase_core/firebase_core.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
+import 'package:mr_samy_elmalah/data/firebase_import.dart';
 import 'package:mr_samy_elmalah/data/firebase_retrieve.dart';
 import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
 import 'package:mr_samy_elmalah/widgets/custom_text_field.dart';
@@ -12,8 +13,7 @@ class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
   final TextEditingController _emailController = TextEditingController();
   // final TextEditingController _passController = TextEditingController();
-  final TextEditingController _codeController =
-      TextEditingController(text: 'DS33D');
+  final TextEditingController _codeController = TextEditingController();
   final TextEditingController _fnameController = TextEditingController();
   final TextEditingController _lnameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -104,6 +104,7 @@ class ProfilePage extends StatelessWidget {
               _lnameController.text = data['lname'];
               _phoneController.text = data['phoneNumber'];
               _selectedGrade = int.parse(data['graduate']);
+              _codeController.text = data['id'];
               return SingleChildScrollView(
                 child: Center(
                   child: SizedBox(
@@ -238,9 +239,24 @@ class ProfilePage extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              onPressed: () {
+                              onPressed: () async {
                                 ///
                                 isLoading = true;
+                                bool edited = await FirebaseImport()
+                                    .editProfile(
+                                        _emailController.text,
+                                        _fnameController.text,
+                                        _lnameController.text,
+                                        _phoneController.text,
+                                        _selectedGrade);
+                                isLoading = false;
+                                if (edited) {
+                                  CustomDialog(
+                                          title: 'تم',
+                                          desc: 'تم التعديل',
+                                          dialogType: DialogType.success)
+                                      .showdialog(context);
+                                }
 
                                 ///
                               },

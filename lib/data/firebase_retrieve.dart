@@ -60,6 +60,7 @@ class FirebaseRetrieve {
           .collection('students')
           .doc(uid)
           .get();
+      userData.data()!['userMainData']['id'] = uid;
       return userData.data()!['userMainData'];
     } catch (e) {
       print(e);

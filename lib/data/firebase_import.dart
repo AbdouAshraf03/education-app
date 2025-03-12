@@ -1,8 +1,5 @@
-// import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
-// import 'package:firebase_core/firebase_core.dart';
 
 class FirebaseImport {
   final String? uid = FirebaseAuth.instance.currentUser?.uid;
@@ -11,6 +8,26 @@ class FirebaseImport {
         .collection('students')
         .doc(uid)
         .set({'id': uid, 'userMainData': mainUserData});
+  }
+
+  Future<bool> editProfile(String email, String fname, String lname,
+      String phoneNumber, int graduate) async {
+    try {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      await FirebaseFirestore.instance.collection('students').doc(uid).set({
+        'userMainData': {
+          'email': email,
+          'fname': fname,
+          'lname': lname,
+          'phoneNumber': phoneNumber,
+          'graduate': graduate
+        }
+      });
+      return true;
+    } on FirebaseException catch (e) {
+      print(e);
+      return false;
+    }
   }
 
   Future<bool> importVideoData(String videoId, String section) async {
@@ -26,7 +43,7 @@ class FirebaseImport {
         snapshot.reference.set({
           'id': videoId,
           'section': section,
-          'purchased_data': DateTime.now()
+          'purchased_data': Timestamp.fromDate(DateTime.now())
         });
         return true;
       } else {
