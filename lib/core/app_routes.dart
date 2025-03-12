@@ -9,6 +9,7 @@ import 'package:mr_samy_elmalah/views/main_pages/main_page.dart';
 import 'package:mr_samy_elmalah/views/main_pages/video_page.dart';
 import 'package:mr_samy_elmalah/views/profile_page/profile_page.dart';
 import 'package:mr_samy_elmalah/views/purchase_and_video/purchase_page.dart';
+import 'package:mr_samy_elmalah/views/search_page/search_page.dart';
 import 'package:mr_samy_elmalah/views/video_player/video_player_page.dart';
 
 class AppRoutes {
@@ -22,6 +23,7 @@ class AppRoutes {
   static const String purchasePage = '/purchasePage';
   static const String videoPlayerPage = '/videoPlayerPage';
   static const String profilePage = '/profilePage';
+  static const String searchPage = '/searchPage';
   static const String mainPage = '/';
   // static const String departments = '/departments';
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -87,6 +89,8 @@ class AppRoutes {
             builder: (context) => VideoPlayerPage(
                   videoUrl: videoUrl,
                 ));
+      case searchPage:
+        return MaterialPageRoute(builder: (context) => SearchPage());
       default:
         return MaterialPageRoute(
           builder: (context) => const Scaffold(

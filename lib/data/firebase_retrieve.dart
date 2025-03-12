@@ -56,12 +56,14 @@ class FirebaseRetrieve {
   Future<Map?> getUserData() async {
     try {
       final String uid = FirebaseAuth.instance.currentUser!.uid;
-      var userData = await FirebaseFirestore.instance
+      DocumentSnapshot<Map<String, dynamic>> userData = await FirebaseFirestore
+          .instance
           .collection('students')
           .doc(uid)
           .get();
-      userData.data()!['userMainData']['id'] = uid;
-      return userData.data()!['userMainData'];
+      Map<String, dynamic> mainData = userData.data()!['userMainData'];
+      mainData.addAll({'id': uid});
+      return mainData;
     } catch (e) {
       print(e);
       return null;
@@ -92,7 +94,7 @@ class FirebaseRetrieve {
           .collection('students')
           .doc(uid)
           .get();
-      String graduate = userData.data()!['userMainData']['graduate'];
+      String graduate = userData.data()!['userMainData']['graduate'].toString();
       // print(graduate);
       if (graduate == '3') {
         graduate = '3rd_secondary';

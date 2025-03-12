@@ -211,7 +211,7 @@ class _PurchasePageState extends State<PurchasePage> {
                   children: [
                     Text(
                       !widget.isPurchased
-                          ? widget.routeArg['price']
+                          ? widget.routeArg['price'].toString()
                           : '(ايام ${_getTimeRemaining((widget.routeArg['purchased_date'] as Timestamp).toDate()).toString()} )',
                       textAlign: TextAlign.center,
                       style:
@@ -264,7 +264,7 @@ class _PurchasePageState extends State<PurchasePage> {
                       SizedBox(
                         width: 5,
                       ),
-                      Icon(Icons.check),
+                      widget.isPurchased ? Icon(Icons.check) : SizedBox(),
                     ],
                   ),
                 ),
