@@ -24,7 +24,10 @@ class MyDrawer extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
-                      child: LottieLoader(),
+                      child: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: Center(child: LottieLoader())),
                     );
                   }
                   if (snapshot.hasError) {
@@ -137,8 +140,8 @@ class MyDrawer extends StatelessWidget {
                       )),
               // leading: ,
               onTap: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.mainPage,
-                    arguments: 0);
+                Navigator.of(context)
+                    .pushReplacementNamed(AppRoutes.mainPage, arguments: 0);
               },
             ),
             //! AI
@@ -155,8 +158,8 @@ class MyDrawer extends StatelessWidget {
                       )),
               // leading: ,
               onTap: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.mainPage,
-                    arguments: 1);
+                Navigator.of(context)
+                    .pushReplacementNamed(AppRoutes.mainPage, arguments: 1);
               },
             ),
             //! my videos
@@ -173,9 +176,8 @@ class MyDrawer extends StatelessWidget {
                       )),
               // leading: ,
               onTap: () {
-                //  FirebaseRetrieve().getMyVideos();
-                Navigator.pushReplacementNamed(context, AppRoutes.mainPage,
-                    arguments: 2);
+                Navigator.of(context)
+                    .pushReplacementNamed(AppRoutes.mainPage, arguments: 2);
               },
             ),
             // ListTile(

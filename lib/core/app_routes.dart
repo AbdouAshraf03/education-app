@@ -24,11 +24,11 @@ class AppRoutes {
   static const String videoPlayerPage = '/videoPlayerPage';
   static const String profilePage = '/profilePage';
   static const String searchPage = '/searchPage';
-  static const String mainPage = '/';
+  static const String mainPage = '/mainPage';
   // static const String departments = '/departments';
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      // (/) => home page
+      // home page
       case home:
         return MaterialPageRoute(builder: (context) => HomePage());
       // log in page
@@ -37,14 +37,14 @@ class AppRoutes {
       // sign up page
       case signUp:
         return MaterialPageRoute(builder: (context) => SignUpPage());
-      // main page
+      // (/) =>  main page
       case mainPage:
         final index = settings.arguments as int;
-        return MaterialPageRoute(
-          builder: (context) => MainPage(
+        return MaterialPageRoute(builder: (context) {
+          return MainPage(
             index: index,
-          ),
-        );
+          );
+        });
       // videoPage page
       case videoPage:
         return MaterialPageRoute(builder: (context) => VideoPage());
@@ -52,7 +52,6 @@ class AppRoutes {
       case aiPage:
         return MaterialPageRoute(builder: (context) => AiPage());
       // firstSecondary page
-
       case secondary:
         String secondaryTitle = settings.arguments as String;
         return MaterialPageRoute(

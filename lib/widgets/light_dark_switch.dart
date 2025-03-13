@@ -31,7 +31,7 @@ class _LightDarkSwitchAppState extends State<LightDarkSwitchApp> {
         // duration: Duration(milliseconds: 800),
         initiallyDark: isDark,
         size: 28,
-        duration: Duration(milliseconds: 800),
+        duration: Duration(milliseconds: 500),
         onChange: (value) {
           setState(() {
             if (value) {

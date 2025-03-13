@@ -52,6 +52,7 @@ dependencies:
   flutter_facebook_auth: ^7.1.1
   wakelock_plus: ^1.2.10
   day_night_themed_switcher: ^1.2.5
+  flutter_launcher_icons: ^0.14.3
 
 
 
@@ -74,6 +75,7 @@ flutter:
   assets:
     - assets/images/
     - assets/lottie/
+    - assets/logos/
     - .env # Add this line
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
