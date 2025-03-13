@@ -38,8 +38,9 @@ class HomeViewModel {
                 onPressed: () {
                   Navigator.pushNamed(context, AppRoutes.searchPage);
                 },
-                icon: const Icon(
+                icon: Icon(
                   Iconsax.search_normal_1_copy,
+                  color: Theme.of(context).primaryIconTheme.color,
                 )),
             AnimatedMenuButton(),
           ],

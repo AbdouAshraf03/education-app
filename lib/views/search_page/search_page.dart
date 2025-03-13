@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:mr_samy_elmalah/data/firebase_retrieve.dart';
+import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
+import 'package:mr_samy_elmalah/widgets/videos_card.dart'; // Add Firebase Firestore dependency
 
 class SearchPage extends StatefulWidget {
   @override
@@ -9,33 +14,77 @@ class _SearchPageState extends State<SearchPage> {
   String? _selectedGrade;
   String? _selectedSection;
   String _searchQuery = '';
+  List<String>? _sectionsList;
   final TextEditingController _searchController = TextEditingController();
+  List<Map<String, dynamic>>? _videos;
+  bool _isLoading = false;
+  bool _isLoadingSections = false;
 
-  final List<DropdownMenuEntry<String>> _grades = [
-    DropdownMenuEntry(value: '1st', label: '1st Grade'),
-    DropdownMenuEntry(value: '2nd', label: '2nd Grade'),
-    DropdownMenuEntry(value: '3rd', label: '3rd Grade'),
-  ];
+  // final List<DropdownMenuEntry<String>> _grades = [
+  //   DropdownMenuEntry(value: '1st_secondary', label: 'الصف الاول الثانوي'),
+  //   DropdownMenuEntry(value: '2nd_secondary', label: 'الصف الثاني الثانوي'),
+  //   DropdownMenuEntry(value: '3rd_secondary', label: 'الصف الثالث الثانوي'),
+  // ];
 
-  final List<DropdownMenuEntry<String>> _sections = [
-    DropdownMenuEntry(value: 'A', label: 'Section A'),
-    DropdownMenuEntry(value: 'B', label: 'Section B'),
-    DropdownMenuEntry(value: 'C', label: 'Section C'),
-  ];
+  // final List<DropdownMenuEntry<String>> _sections = [
+  //   DropdownMenuEntry(value: 'تفاضل و تكامل', label: 'Section A'),
+  //   DropdownMenuEntry(value: 'B', label: 'Section B'),
+  //   DropdownMenuEntry(value: 'C', label: 'Section C'),
+  // ];
+
+  Future<void> _fetchVideos() async {
+    if (_selectedGrade == null || _selectedSection == null) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final videos = await FirebaseRetrieve()
+          .getVideos(_selectedGrade!, _selectedSection!);
+      setState(() {
+        _videos = videos;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print(e.toString() + ' =======================');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<List<String>?> getSections(String grade) async {
+    try {
+      return FirebaseRetrieve().getSectionsNames(grade);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Theme.of(context).primaryIconTheme.color,
+          ),
+        ),
         title: TextField(
           controller: _searchController,
+          style: Theme.of(context).textTheme.bodyMedium,
           decoration: InputDecoration(
             hintText: 'Search...',
-            hintStyle: TextStyle(color: Colors.white70),
+            hintStyle: Theme.of(context).textTheme.bodyMedium,
             border: InputBorder.none,
-            prefixIcon: Icon(Icons.search, color: Colors.white),
+            prefixIcon: Icon(Iconsax.search_normal_1_copy,
+                color: Theme.of(context).primaryIconTheme.color),
           ),
-          style: TextStyle(color: Colors.white),
+          // style: TextStyle(color: Colors.white),
           onChanged: (value) {
             setState(() {
               _searchQuery = value;
@@ -50,29 +99,44 @@ class _SearchPageState extends State<SearchPage> {
             // Grade Dropdown
             GradeDropdownMenu(
               selectedGrade: _selectedGrade,
-              onGradeSelected: (value) {
+              onGradeSelected: (value) async {
                 setState(() {
                   _selectedGrade = value;
+                  _selectedSection = null; // Reset section when grade changes
+                  _sectionsList = []; // Clear sections list
+                  _isLoadingSections = true; // Show loading indicator
                 });
+
+                if (value != null) {
+                  final sections = await getSections(value);
+                  setState(() {
+                    _sectionsList = sections;
+                    _isLoadingSections = false; // Hide loading indicator
+                  });
+                } // Fetch videos when grade is selected
               },
             ),
             SizedBox(height: 16),
-
             // Section Dropdown
             SectionDropdownMenu(
+              sectionsList: _sectionsList ?? [],
               selectedSection: _selectedSection,
               onSectionSelected: (value) {
                 setState(() {
                   _selectedSection = value;
                 });
+                _fetchVideos(); // Fetch videos when section is selected
               },
             ),
             SizedBox(height: 16),
 
-            // Search Results
-            Expanded(
-              child: _buildSearchResults(),
-            ),
+            // Loading Indicator
+            if (_isLoading)
+              LottieLoader()
+            else
+              Expanded(
+                child: _buildSearchResults(),
+              ),
           ],
         ),
       ),
@@ -80,24 +144,38 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildSearchResults() {
-    if (_searchQuery.isEmpty) {
+    if (_videos == null) {
       return Center(
-        child: Text('Enter a search query to see results.'),
+        child: Text('اختار الصف و القسم'),
       );
     }
 
-    // Simulate search results based on the query
-    final results = [
-      'Result 1 for "$_searchQuery" (Grade: $_selectedGrade, Section: $_selectedSection)',
-      'Result 2 for "$_searchQuery" (Grade: $_selectedGrade, Section: $_selectedSection)',
-      'Result 3 for "$_searchQuery" (Grade: $_selectedGrade, Section: $_selectedSection)',
-    ];
+    if (_searchQuery.isEmpty) {
+      return Center(
+        child: Text('اكتب للبحث'),
+      );
+    }
+
+    // Filter videos based on the search query
+    final filteredVideos = _videos!
+        .where((video) =>
+            video['title'].toLowerCase().contains(_searchQuery.toLowerCase()))
+        .toList();
+
+    if (filteredVideos.isEmpty) {
+      return Center(
+        child: Text('مفيش نتيجة يسطا "$_searchQuery".'),
+      );
+    }
 
     return ListView.builder(
-      itemCount: results.length,
+      itemCount: filteredVideos.length,
       itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(results[index]),
+        final video = filteredVideos[index];
+        return MyVideosCard(
+          myVideos: video,
+          isPurchased: false,
+          section: '',
         );
       },
     );
@@ -109,6 +187,7 @@ class GradeDropdownMenu extends StatelessWidget {
   final Function(String?) onGradeSelected;
 
   const GradeDropdownMenu({
+    super.key,
     required this.selectedGrade,
     required this.onGradeSelected,
   });
@@ -116,11 +195,31 @@ class GradeDropdownMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<DropdownMenuEntry<String>> _grades = [
-      DropdownMenuEntry(value: '1st', label: '1st Grade'),
-      DropdownMenuEntry(value: '2nd', label: '2nd Grade'),
-      DropdownMenuEntry(value: '3rd', label: '3rd Grade'),
+      DropdownMenuEntry(
+        value: '1st_secondary',
+        label: 'الصف الاول الثانوي',
+        labelWidget: Text(
+          'الصف الاول الثانوي',
+          style: TextStyle(fontFamily: 'ge_ss', fontWeight: FontWeight.bold),
+        ),
+      ),
+      DropdownMenuEntry(
+        value: '2nd_secondary',
+        label: 'الصف الثاني الثانوي',
+        labelWidget: Text(
+          'الصف الثاني الثانوي',
+          style: TextStyle(fontFamily: 'ge_ss', fontWeight: FontWeight.bold),
+        ),
+      ),
+      DropdownMenuEntry(
+        value: '3rd_secondary',
+        label: 'الصف الثالث الثانوي',
+        labelWidget: Text(
+          'الصف الثالث الثانوي',
+          style: TextStyle(fontFamily: 'ge_ss', fontWeight: FontWeight.bold),
+        ),
+      ),
     ];
-
     return DropdownMenu<String>(
       dropdownMenuEntries: _grades,
       initialSelection: selectedGrade,
@@ -159,21 +258,26 @@ class SectionDropdownMenu extends StatelessWidget {
   final String? selectedSection;
   final Function(String?) onSectionSelected;
 
-  const SectionDropdownMenu({
+  SectionDropdownMenu({
     required this.selectedSection,
+    required this.sectionsList,
     required this.onSectionSelected,
   });
-
+  List<String> sectionsList = [];
   @override
   Widget build(BuildContext context) {
-    final List<DropdownMenuEntry<String>> _sections = [
-      DropdownMenuEntry(value: 'A', label: 'Section A'),
-      DropdownMenuEntry(value: 'B', label: 'Section B'),
-      DropdownMenuEntry(value: 'C', label: 'Section C'),
-    ];
-
     return DropdownMenu<String>(
-      dropdownMenuEntries: _sections,
+      dropdownMenuEntries: sectionsList
+          .map((section) => DropdownMenuEntry(
+                value: section,
+                label: section,
+                labelWidget: Text(
+                  section,
+                  style: TextStyle(
+                      fontFamily: 'ge_ss', fontWeight: FontWeight.bold),
+                ),
+              ))
+          .toList(),
       initialSelection: selectedSection,
       width: MediaQuery.of(context).size.width - 20,
       textStyle: Theme.of(context)

@@ -127,7 +127,7 @@ class _PurchasePageState extends State<PurchasePage> {
     DateTime now = DateTime.now();
     int max = 3;
     var timeRemaining = purchasedDate.difference(now);
-    return max - timeRemaining.inDays;
+    return max + timeRemaining.inDays.compareTo(max);
   }
 
   @override
