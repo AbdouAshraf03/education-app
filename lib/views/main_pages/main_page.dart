@@ -98,6 +98,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     _viewModel = HomeViewModel(context);
+
     super.initState();
   }
 

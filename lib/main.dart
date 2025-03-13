@@ -22,17 +22,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeNotifier,
-      builder: (context, themeMode, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          themeMode: themeMode,
-          darkTheme: AppTheme.darkTheme,
-          theme: AppTheme.lightTheme,
-          // initialRoute: AppRoutes.mainPage,
-          onGenerateRoute: AppRoutes.generateRoute,
-          home: AuthWrapper(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      // initialRoute: AppRoutes.mainPage,
+      onGenerateRoute: AppRoutes.generateRoute,
+      home: AuthWrapper(),
+      themeMode: themeNotifier.value, // Use the current theme mode
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      builder: (context, child) {
+        return AnimatedBuilder(
+          animation: themeNotifier,
+          builder: (context, child) {
+            return Theme(
+              data: themeNotifier.value == ThemeMode.dark
+                  ? AppTheme.darkTheme
+                  : AppTheme.lightTheme,
+              child: child!,
+            );
+          },
+          child: child,
         );
       },
     );

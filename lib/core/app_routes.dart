@@ -39,7 +39,7 @@ class AppRoutes {
         return MaterialPageRoute(builder: (context) => SignUpPage());
       // main page
       case mainPage:
-        final index = settings.arguments as int? ?? 0;
+        final index = settings.arguments as int;
         return MaterialPageRoute(
           builder: (context) => MainPage(
             index: index,
