@@ -263,7 +263,7 @@ class SectionDropdownMenu extends StatelessWidget {
     required this.sectionsList,
     required this.onSectionSelected,
   });
-  List<String> sectionsList = [];
+  final List<String> sectionsList;
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<String>(
