@@ -124,33 +124,36 @@ class FirebaseRetrieve {
 
   Future<List<Map<String, dynamic>>> getMyVideosFromList(
       List<Map<String, dynamic>> videosMapList) async {
-    List<Map<String, dynamic>> videosData = [];
-    String graduate = videosMapList[0]['graduate'];
-    videosMapList.removeAt(0);
+    try {
+      List<Map<String, dynamic>> videosData = [];
+      String graduate = videosMapList[0]['graduate'];
+      videosMapList.removeAt(0);
+      print(videosMapList);
+      for (var video in videosMapList) {
+        var data = await _getVideoData(video['id'], graduate, video['section']);
+        videosData.add(data);
+      }
 
-    for (var video in videosMapList) {
-      var data =
-          await _getVideoData(video['video_id'], graduate, video['section']);
-      videosData.add(data);
+      return videosData;
+    } on Exception catch (e) {
+      print(e);
+      return [];
     }
-
-    return videosData;
   }
 
   Future _getVideoData(String videoId, String graduate, String section) async {
-    try {
-      var snapshot = await FirebaseFirestore.instance
-          .collection(graduate)
-          //TODO : change this
-          .doc('section')
-          .collection(section)
-          .doc(videoId)
-          .get();
-      //print(snapshot.data());
-      return snapshot.data();
-    } catch (e) {
-      print(e.toString() + ' =======================');
-    }
+    var snapshot = await FirebaseFirestore.instance
+        .collection(graduate)
+        //TODO : change this
+        .doc('section')
+        .collection(section)
+        .doc(videoId)
+        .get();
+    //print(snapshot.data());
+    return snapshot.data();
+    // } catch (e) {
+    //   print(e.toString() + ' =======================');
+    // }
   }
 
   Future<List<Map<String, dynamic>>?> getVideos(
@@ -166,6 +169,38 @@ class FirebaseRetrieve {
       print(e);
     }
     return null;
+  }
+
+  Future<bool> isThereUser() async {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    var snapshot =
+        await FirebaseFirestore.instance.collection('students').doc(uid).get();
+    if (snapshot.exists) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> isTheEmailUsed(String email) async {
+    try {
+      // Query the Firestore collection to check if the email exists in the `userMainData` map
+      var snapshot = await FirebaseFirestore.instance
+          .collection('students')
+          .where('userMainData.email', isEqualTo: email)
+          .get();
+
+      // If the snapshot has any documents, it means the email is already used
+      if (snapshot.docs.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      // Handle any errors that occur during the process
+      print('Error checking email: $e');
+      return false;
+    }
   }
 
 //!#######

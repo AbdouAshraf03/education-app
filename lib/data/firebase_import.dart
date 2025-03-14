@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseImport {
   final String? uid = FirebaseAuth.instance.currentUser?.uid;
-  Future<void> importUserData(Map<String, String> mainUserData) async {
+  Future<void> importUserData(Map<String, dynamic> mainUserData) async {
     await FirebaseFirestore.instance
         .collection('students')
         .doc(uid)

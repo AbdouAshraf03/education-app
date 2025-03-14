@@ -73,6 +73,7 @@ class AppRoutes {
       case purchasePage:
         final routeArg = settings.arguments as Map<String, dynamic>;
         final isPurchased = routeArg['isPurchased'];
+
         return MaterialPageRoute(
             builder: (context) => PurchasePage(
                   routeArg: routeArg,

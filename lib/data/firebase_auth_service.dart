@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
+import 'package:mr_samy_elmalah/data/firebase_import.dart';
+import 'package:mr_samy_elmalah/data/firebase_retrieve.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
 class FirebaseAuthService {
@@ -64,8 +66,9 @@ class FirebaseAuthService {
 
   Future<void> signInWithGoogle(BuildContext context) async {
     try {
+      // Step 1: Sign in with Google
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return;
+      if (googleUser == null) return; // User canceled the sign-in process
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
@@ -75,14 +78,59 @@ class FirebaseAuthService {
         idToken: googleAuth.idToken,
       );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      // Step 2: Sign in to Firebase with the Google credential
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Step 3: Check if the email is already used
+      // bool emailUsed =
+      //     await FirebaseRetrieve().isTheEmailUsed(googleUser.email);
+      // if (emailUsed) {
+      //   if (context.mounted) {
+      //     CustomDialog(
+      //       title: 'Error',
+      //       desc: 'The email is already used.',
+      //       dialogType: DialogType.error,
+      //     ).showdialog(context);
+      //   }
+      //   return; // Exit if the email is already used
+      // }
+
+      // Step 4: Check if user data exists
+      bool saveData = await FirebaseRetrieve().isThereUser();
+      if (!saveData) {
+        // Step 5: Save user data if it doesn't exist
+        await FirebaseImport().importUserData({
+          'email': googleUser.email,
+          'fname': googleUser.displayName!.split(' ')[0],
+          'lname': googleUser.displayName!.split(' ')[1],
+          'phoneNumber': '',
+          'graduate': 3,
+        });
+      }
+
+      // Step 6: Navigate to the main page
       if (context.mounted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.mainPage);
+        Navigator.pushReplacementNamed(context, AppRoutes.mainPage,
+            arguments: 0);
       }
     } on FirebaseAuthException catch (e) {
+      // Handle Firebase authentication errors
       if (context.mounted) {
-        CustomDialog(title: 'error', desc: e.code, dialogType: DialogType.error)
-            .showdialog(context);
+        CustomDialog(
+          title: 'Error',
+          desc: e.code,
+          dialogType: DialogType.error,
+        ).showdialog(context);
+      }
+    } catch (e) {
+      // Handle other errors (e.g., network, Firestore)
+      if (context.mounted) {
+        CustomDialog(
+          title: 'Error',
+          desc: '${e.toString()} ===============',
+          dialogType: DialogType.error,
+        ).showdialog(context);
       }
     }
   }
