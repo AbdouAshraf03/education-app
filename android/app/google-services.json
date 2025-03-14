@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "663948094142-ao47iklrcbc14lsj2u09ie9rnto5dl6l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mr_samy_elmalah",
+            "certificate_hash": "55157dfc50f33f92769fe11a6fe9972d78996a68"
+          }
+        },
+        {
           "client_id": "663948094142-h53g1pr5vch12c61nd5r073kqjifqa23.apps.googleusercontent.com",
           "client_type": 3
         }
