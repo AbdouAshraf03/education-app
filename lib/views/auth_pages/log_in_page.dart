@@ -37,12 +37,16 @@ class _LogInPageState extends State<LogInPage> {
                 children: [
                   //! image logo
                   Container(
-                      height: 100,
-                      width: 100,
-                      decoration: const BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.only())),
-                  const SizedBox(height: 20),
+                    height: 180,
+                    width: 180,
+                    decoration: const BoxDecoration(
+                      //color: Colors.blue,
+                      image: DecorationImage(
+                          image: AssetImage(
+                              'assets/logos/3math_logo-removebg.png')),
+                      //borderRadius: BorderRadius.only(),
+                    ),
+                  ),
                   //! title
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
