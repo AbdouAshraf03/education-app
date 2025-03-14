@@ -24,6 +24,24 @@ class PurchasePage extends StatefulWidget {
 }
 
 class _PurchasePageState extends State<PurchasePage> {
+  // Helper method to show an error dialog
+  void _showErrorDialog(BuildContext context, String message) {
+    CustomDialog(
+      title: 'Error',
+      desc: message,
+      dialogType: DialogType.error,
+    ).showdialog(context);
+  }
+
+// Helper method to show a success dialog
+  void _showSuccessDialog(BuildContext context, String message) {
+    CustomDialog(
+      title: 'Success',
+      desc: message,
+      dialogType: DialogType.success,
+    ).showdialog(context);
+  }
+
   Future<void> _displayTextInputDialog(BuildContext context) async {
     return showDialog(
       context: context,
@@ -78,45 +96,51 @@ class _PurchasePageState extends State<PurchasePage> {
               },
             ),
             ElevatedButton(
-              child: Text('OK'),
-              onPressed: () {
-                // Navigator.pop(context);
-                PurchasedService()
-                    .isValidCode(
-                        PurchasePage._textFieldController.text, context)
-                    .then((value) {
-                  if (value) {
-                    if (context.mounted) {
-                      PurchasedService()
-                          .purchasedCode(
-                              PurchasePage._textFieldController.text,
-                              widget.routeArg['vid_code'],
-                              widget.routeArg['section'],
-                              context)
-                          .then((value) {
-                        if (value) {
-                          if (context.mounted) {
-                            CustomDialog(
-                                    title: 'Success',
-                                    desc: "تم شراء المحاضرة بنجاح",
-                                    dialogType: DialogType.success)
-                                .showdialog(context);
-                          }
-                        }
-                      });
+                child: Text('OK'),
+                onPressed: () async {
+                  // Ensure the context is still valid
+                  if (!context.mounted) return;
+
+                  // Get the code from the text field
+                  final String code = PurchasePage._textFieldController.text;
+
+                  try {
+                    // Step 1: Validate the code
+                    final bool isValid =
+                        await PurchasedService().isValidCode(code, context);
+                    if (!isValid) {
+                      if (context.mounted) {
+                        _showErrorDialog(context, "الكود غير صحيح");
+                      }
+                      return;
                     }
-                  } else {
+                    final bool isUsedCode = await PurchasedService()
+                        .isUsedCode(widget.routeArg['vid_code']);
+                    if (isUsedCode) {
+                      if (context.mounted) {
+                        _showErrorDialog(context, "تم استخدامه مسبقًا");
+                      }
+                      return;
+                    }
+                    // Step 2: Purchase the code
+                    final bool isPurchased =
+                        await PurchasedService().purchasedCode(
+                      code,
+                      widget.routeArg['vid_code'],
+                      widget.routeArg['section'],
+                    );
+
+                    // Step 3: Show success dialog if purchase is successful
+                    if (isPurchased && context.mounted) {
+                      _showSuccessDialog(context, "تم شراء المحاضرة بنجاح");
+                    }
+                  } catch (e) {
+                    // Handle any unexpected errors
                     if (context.mounted) {
-                      CustomDialog(
-                              title: 'error',
-                              desc: "او الكود غير صحيح تم استخدام الكود مسبقًا",
-                              dialogType: DialogType.error)
-                          .showdialog(context);
+                      _showErrorDialog(context, "حدث خطأ غير متوقع: $e");
                     }
                   }
-                });
-              },
-            ),
+                }),
           ],
         );
       },
@@ -212,7 +236,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     Text(
                       !widget.isPurchased
                           ? widget.routeArg['price'].toString()
-                          : '(ايام ${_getTimeRemaining((widget.routeArg['purchased_date'] as Timestamp).toDate()).toString()} )',
+                          : '(ايام ${_getTimeRemaining((widget.routeArg['purchased_data'] as Timestamp).toDate()).toString()} )',
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),

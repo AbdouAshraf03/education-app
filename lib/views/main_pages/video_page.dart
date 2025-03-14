@@ -12,7 +12,7 @@ class VideoPage extends StatelessWidget {
     var data = await _getMyVideos();
     List videosData = await FirebaseRetrieve().getMyVideosFromList(data);
     for (int i = 0; i < videosData.length; i++) {
-      videosData[i].addAll({'purchased_date': data[i]['purchased_date']});
+      videosData[i].addAll({'purchased_data': data[i]['purchased_data']});
     }
     return videosData;
   }

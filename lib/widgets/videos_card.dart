@@ -24,7 +24,7 @@ class _MyVideosCardState extends State<MyVideosCard>
   void initState() {
     widget.myVideos.addAll({
       'isPurchased': widget.isPurchased,
-      // 'section': widget.section,
+      'section': widget.section,
     });
     //print(widget.myVideos);
     super.initState();
