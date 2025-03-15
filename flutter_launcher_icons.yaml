@@ -1,9 +1,9 @@
 # flutter pub run flutter_launcher_icons
 flutter_launcher_icons:
-  image_path: "assets/logos/3math_logo-removebg.png"
+  image_path: "assets/logos/3math logo.png"
 
   android: "launcher_icon"
-  image_path_android: "assets/logos/3math_logo-removebg.png"
+  image_path_android: "assets/logos/3math logo.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
   # adaptive_icon_background: "assets/icon/background.png"
   # adaptive_icon_foreground: "assets/icon/foreground.png"
@@ -18,15 +18,15 @@ flutter_launcher_icons:
 
   web:
     generate: true
-    image_path: "assets/logos/3math_logo-removebg.png"
+    image_path: "assets/logos/3math logo.png"
     background_color: "#hexcode"
     theme_color: "#hexcode"
 
   windows:
     generate: true
-    image_path: "assets/logos/3math_logo-removebg.png"
+    image_path: "assets/logos/3math logo.png"
     icon_size: 128 # min:48, max:256, default: 48
 
   macos:
     generate: true
-    image_path: "assets/logos/3math_logo-removebg.png"
+    image_path: "assets/logos/3math logo.png"
