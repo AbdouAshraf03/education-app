@@ -149,9 +149,16 @@ class _PurchasePageState extends State<PurchasePage> {
 
   int _getTimeRemaining(DateTime purchasedDate) {
     DateTime now = DateTime.now();
-    int max = 3;
-    var timeRemaining = purchasedDate.difference(now);
-    return max + timeRemaining.inDays.compareTo(max);
+    int maxCooldownDays = 3;
+
+    // Calculate the difference between now and the purchased date
+    Duration difference = now.difference(purchasedDate);
+
+    // Calculate the remaining days in the cooldown period
+    int remainingDays = maxCooldownDays - difference.inDays;
+
+    // Ensure the result is not negative (cooldown expired)
+    return remainingDays > 0 ? remainingDays : 0;
   }
 
   @override
