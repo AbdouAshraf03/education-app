@@ -91,13 +91,13 @@ class _SecondaryCardState extends State<SecondaryCard>
               child: Container(
                 height: 240,
                 decoration: BoxDecoration(
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromARGB(149, 0, 0, 0),
-                      blurRadius: 10,
-                      offset: Offset(0, 8),
-                    )
-                  ],
+                  // boxShadow: const [
+                  //   BoxShadow(
+                  //     color: Color.fromARGB(149, 0, 0, 0),
+                  //     blurRadius: 10,
+                  //     offset: Offset(0, 8),
+                  //   )
+                  // ],
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
                   image: DecorationImage(
                     image: NetworkImage(widget.imageUrl),
