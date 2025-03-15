@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:mr_samy_elmalah/data/firebase_retrieve.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 import 'package:mr_samy_elmalah/widgets/videos_card.dart'; // Add Firebase Firestore dependency
 
 class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -18,7 +20,7 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>>? _videos;
   bool _isLoading = false;
-  bool _isLoadingSections = false;
+  // bool _isLoadingSections = false;
 
   // final List<DropdownMenuEntry<String>> _grades = [
   //   DropdownMenuEntry(value: '1st_secondary', label: 'الصف الاول الثانوي'),
@@ -104,14 +106,14 @@ class _SearchPageState extends State<SearchPage> {
                   _selectedGrade = value;
                   _selectedSection = null; // Reset section when grade changes
                   _sectionsList = []; // Clear sections list
-                  _isLoadingSections = true; // Show loading indicator
+                  // _isLoadingSections = true; // Show loading indicator
                 });
 
                 if (value != null) {
                   final sections = await getSections(value);
                   setState(() {
                     _sectionsList = sections;
-                    _isLoadingSections = false; // Hide loading indicator
+                    // _isLoadingSections = false; // Hide loading indicator
                   });
                 } // Fetch videos when grade is selected
               },

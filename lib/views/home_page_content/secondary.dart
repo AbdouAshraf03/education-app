@@ -9,7 +9,7 @@ import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 import 'package:vertical_card_pager/vertical_card_pager.dart';
 
 class Secondary extends StatelessWidget {
-  Secondary({super.key, required this.secondaryTitle});
+  const Secondary({super.key, required this.secondaryTitle});
 
   final String secondaryTitle;
 
@@ -20,16 +20,8 @@ class Secondary extends StatelessWidget {
       'الصف الثالث الثانوي' => "3rd_secondary",
       _ => "Null",
     };
-    //  print("Secondary Title: $title"); // Debugging statement
     return title;
   }
-
-  // List<String> sectionsTitles = [];
-  final List<String> sectionsImagesUrls = List.generate(
-    5,
-    (index) =>
-        'https://img.freepik.com/free-photo/cosmic-background-white-black-laser-lights_181624-27720.jpg?t=st=1740695009~exp=1740698609~hmac=daa65ecf700e0e9d34e4122bf32d2179db285bb2bf40cabb640935fb2feda4de&w=1380',
-  );
 
   Future<List<String>?> _getSections() async {
     // print(
@@ -48,51 +40,16 @@ class Secondary extends StatelessWidget {
         // print(
         //     "FutureBuilder called with snapshot: ${snapshot.connectionState}"); // Debugging statement
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            endDrawer: const MyDrawer(),
-            appBar: AppBar(
-              centerTitle: false,
-              actions: [
-                Center(
-                  child: Text(
-                    "الاقسام",
-                    // textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SizedBox(width: 20),
-                Icon(Iconsax.book_copy, color: Theme.of(context).primaryColor),
-                SizedBox(width: 20),
-                AnimatedMenuButton()
-              ],
-              leading: IconButton(
-                onPressed: () => Navigator.pushReplacementNamed(
-                  context,
-                  AppRoutes.mainPage,
-                  arguments: 0,
-                ),
-                icon: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: Theme.of(context).primaryIconTheme.color,
-                ),
-              ),
-            ),
-            body: const Center(
-              child: LottieLoader(),
-            ),
-          );
+          return _buildScafold(context, LottieLoader());
         }
-
         if (snapshot.hasData) {
-          print("Snapshot has data: ${snapshot.data}"); // Debugging statement
+          //print("Snapshot has data: ${snapshot.data}"); // Debugging statement
           final List<Widget> images = List.generate(
             snapshot.data!.length,
             (index) => DepartmentsCard(
               title: snapshot.data![index],
-              imageUrl: sectionsImagesUrls[index],
+              imageUrl:
+                  'https://img.freepik.com/free-photo/cosmic-background-white-black-laser-lights_181624-27720.jpg?t=st=1740695009~exp=1740698609~hmac=daa65ecf700e0e9d34e4122bf32d2179db285bb2bf40cabb640935fb2feda4de&w=1380',
             ),
           );
           return Scaffold(
@@ -176,7 +133,6 @@ class Secondary extends StatelessWidget {
                             'graduate': getSecondaryTitle()
                           },
                         );
-
                         // optional
                       },
                       initialPage: 2, // optional
@@ -190,76 +146,47 @@ class Secondary extends StatelessWidget {
           );
         }
         if (snapshot.hasError) {
-          Scaffold(
-            endDrawer: const MyDrawer(),
-            appBar: AppBar(
-              centerTitle: false,
-              actions: [
-                Center(
-                  child: Text(
-                    "الاقسام",
-                    // textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SizedBox(width: 20),
-                Icon(Iconsax.book_copy, color: Theme.of(context).primaryColor),
-                SizedBox(width: 20),
-                AnimatedMenuButton()
-              ],
-              leading: IconButton(
-                onPressed: () => Navigator.pushReplacementNamed(
-                  context,
-                  AppRoutes.mainPage,
-                  arguments: 0,
-                ),
-                icon: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: Theme.of(context).primaryIconTheme.color,
-                ),
-              ),
-            ),
-            body: LottieError(),
-          );
+          return _buildScafold(context, LottieError());
         }
-        return Scaffold(
-          endDrawer: const MyDrawer(),
-          appBar: AppBar(
-            centerTitle: false,
-            actions: [
-              Center(
-                child: Text(
-                  "الاقسام",
-                  // textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(width: 20),
-              Icon(Iconsax.book_copy, color: Theme.of(context).primaryColor),
-              SizedBox(width: 20),
-              AnimatedMenuButton()
-            ],
-            leading: IconButton(
-              onPressed: () => Navigator.pushReplacementNamed(
-                context,
-                AppRoutes.mainPage,
-                arguments: 0,
-              ),
-              icon: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: Theme.of(context).primaryIconTheme.color,
-              ),
+        return _buildScafold(context, LottieNoData());
+      },
+    );
+  }
+
+  Widget _buildScafold(BuildContext context, lotti) {
+    return Scaffold(
+      endDrawer: const MyDrawer(),
+      appBar: AppBar(
+        centerTitle: false,
+        actions: [
+          Center(
+            child: Text(
+              "الاقسام",
+              // textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(fontWeight: FontWeight.bold),
             ),
           ),
-          body: LottieNoData(),
-        );
-      },
+          SizedBox(width: 20),
+          Icon(Iconsax.book_copy, color: Theme.of(context).primaryColor),
+          SizedBox(width: 20),
+          AnimatedMenuButton()
+        ],
+        leading: IconButton(
+          onPressed: () => Navigator.pushReplacementNamed(
+            context,
+            AppRoutes.mainPage,
+            arguments: 0,
+          ),
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Theme.of(context).primaryIconTheme.color,
+          ),
+        ),
+      ),
+      body: lotti,
     );
   }
 }
