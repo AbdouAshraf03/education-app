@@ -5,7 +5,7 @@ class AiService {
   Future<String?> generateText(String message) async {
     final apiKey = dotenv.get('API_KEY'); // Access your key
     final model = GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.0-pro-exp-02-05',
       apiKey: apiKey,
       systemInstruction: Content.text(
           "You are a specialized assistant that responds **exclusively in Arabic**."
