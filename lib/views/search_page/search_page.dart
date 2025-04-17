@@ -56,7 +56,7 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  Future<List<String>?> getSections(String grade) async {
+  Future<Map<String, dynamic>?> getSections(String grade) async {
     try {
       return FirebaseRetrieve().getSectionsNames(grade);
     } catch (e) {
@@ -112,7 +112,8 @@ class _SearchPageState extends State<SearchPage> {
                 if (value != null) {
                   final sections = await getSections(value);
                   setState(() {
-                    _sectionsList = sections;
+                    _sectionsList =
+                        sections?.keys.toList(); // Update sections list
                     // _isLoadingSections = false; // Hide loading indicator
                   });
                 } // Fetch videos when grade is selected

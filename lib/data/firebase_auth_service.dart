@@ -9,6 +9,7 @@ import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
 class FirebaseAuthService {
   String? uid = FirebaseAuth.instance.currentUser?.uid;
+
   String _getFriendlyErrorMessage(String code) {
     switch (code) {
       case 'invalid-email':
