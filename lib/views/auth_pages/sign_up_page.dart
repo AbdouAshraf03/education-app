@@ -83,11 +83,16 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     //! image logo
                     Container(
-                        height: 100,
-                        width: 100,
-                        decoration: const BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.only())),
+                      height: 180,
+                      width: 180,
+                      decoration: const BoxDecoration(
+                        //color: Colors.blue,
+                        image: DecorationImage(
+                            image: AssetImage(
+                                'assets/logos/3math_logo-removebg.png')),
+                        //borderRadius: BorderRadius.only(),
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     //! title
                     Row(

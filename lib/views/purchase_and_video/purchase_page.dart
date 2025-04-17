@@ -236,7 +236,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     Text(
                       !widget.isPurchased
                           ? widget.routeArg['price'].toString()
-                          : '(ايام ${_getTimeRemaining((widget.routeArg['purchased_data'] as Timestamp).toDate()).toString()} )',
+                          : '(ايام ${_getTimeRemaining((widget.routeArg['purchased_date'] as Timestamp).toDate()).toString()} )',
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),

@@ -43,7 +43,7 @@ class FirebaseImport {
         snapshot.reference.set({
           'id': videoId,
           'section': section,
-          'purchased_data': Timestamp.fromDate(DateTime.now())
+          'purchased_date': Timestamp.fromDate(DateTime.now())
         });
         return true;
       } else {
