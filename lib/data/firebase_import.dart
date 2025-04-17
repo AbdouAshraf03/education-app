@@ -56,4 +56,25 @@ class FirebaseImport {
       return false;
     }
   }
+
+  Future<void> addToLogs(
+      {required String status,
+      required String lecture,
+      required String userID,
+      required String name,
+      required String email}) {
+    var snapshot = FirebaseFirestore.instance.collection('students').doc().set({
+      "Status": status,
+      "Lecture": lecture,
+      "User_ID": userID,
+      "Name": name,
+      "Email": email,
+      "Time": DateTime.now(),
+    });
+    return snapshot.then((value) {
+      print("Data added to logs successfully");
+    }).catchError((error) {
+      print("Failed to add data to logs: $error");
+    });
+  }
 }
