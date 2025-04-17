@@ -125,9 +125,11 @@ class _PurchasePageState extends State<PurchasePage> {
                     // Step 2: Purchase the code
                     final bool isPurchased =
                         await PurchasedService().purchasedCode(
-                      code,
-                      widget.routeArg['vid_code'],
-                      widget.routeArg['section'],
+                      code: code,
+                      videoCode: widget.routeArg['vid_code'],
+                      section: widget.routeArg['section'],
+                      grade: widget.routeArg['grade'],
+                      videoTitle: widget.routeArg['title'],
                     );
 
                     // Step 3: Show success dialog if purchase is successful

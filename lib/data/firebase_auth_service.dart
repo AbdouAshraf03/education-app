@@ -12,7 +12,7 @@ class FirebaseAuthService {
   String _getFriendlyErrorMessage(String code) {
     switch (code) {
       case 'invalid-email':
-        return 'The email address is badly formatted'; // Match Firebase's message
+        return 'The email address is badly formatted';
       case 'user-not-found':
         return 'No account found with this email';
       case 'wrong-password':
@@ -82,21 +82,6 @@ class FirebaseAuthService {
       final UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
 
-      // Step 3: Check if the email is already used
-      // bool emailUsed =
-      //     await FirebaseRetrieve().isTheEmailUsed(googleUser.email);
-      // if (emailUsed) {
-      //   if (context.mounted) {
-      //     CustomDialog(
-      //       title: 'Error',
-      //       desc: 'The email is already used.',
-      //       dialogType: DialogType.error,
-      //     ).showdialog(context);
-      //   }
-      //   return; // Exit if the email is already used
-      // }
-
-      // Step 4: Check if user data exists
       bool saveData = await FirebaseRetrieve().isThereUser();
       if (!saveData) {
         // Step 5: Save user data if it doesn't exist
@@ -106,6 +91,8 @@ class FirebaseAuthService {
           'lname': googleUser.displayName!.split(' ')[1],
           'phoneNumber': '',
           'graduate': 3,
+          'balance': 0,
+          'user_code': null
         });
       }
 

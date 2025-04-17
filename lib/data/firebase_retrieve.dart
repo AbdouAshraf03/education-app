@@ -21,7 +21,7 @@ class FirebaseRetrieve {
     return null;
   }
 
-  Future<List<String>?> getSectionsNames(String collectionName) async {
+  Future<Map<String, dynamic>?> getSectionsNames(String collectionName) async {
     var sections = await FirebaseFirestore.instance
         .collection(collectionName)
         .doc('section')
@@ -29,7 +29,7 @@ class FirebaseRetrieve {
     if (sections.data() == null) {
       return null;
     }
-    return sections.data()!['section_names'].cast<String>();
+    return sections.data()!['sections'];
   }
 
   Future<List<String>?> getUserEmailAndName() async {

@@ -5,7 +5,6 @@ import 'package:mr_samy_elmalah/data/firebase_import.dart';
 
 class PurchasedService {
   Future<bool> isValidCode(String code, BuildContext context) async {
-    // try {
     var snapshot =
         await FirebaseFirestore.instance.collection('codes').doc(code).get();
     if (snapshot.exists) {
@@ -14,13 +13,6 @@ class PurchasedService {
     } else {
       return false;
     }
-    // } on FirebaseException catch (e) {
-    //   if (context.mounted) {
-    //     CustomDialog(title: 'error', desc: e.code, dialogType: DialogType.error)
-    //         .showdialog(context);
-    //   }
-    //   return false;
-    // }
   }
 
   Future<bool> isUsedCode(String codeId) async {
@@ -39,21 +31,19 @@ class PurchasedService {
   }
 
   Future<bool> purchasedCode(
-      String code, String videoCode, String section) async {
+      {required String code,
+      required String videoCode,
+      required String section,
+      required String grade,
+      required String videoTitle}) async {
     // try {
     var uid = FirebaseAuth.instance.currentUser!.uid;
     var snapshot =
         await FirebaseFirestore.instance.collection('codes').doc(code).get();
     await snapshot.reference.update({'user_id': uid});
-    bool exists = await FirebaseImport().importVideoData(videoCode, section);
+    bool exists = await FirebaseImport()
+        .importVideoData(videoCode, section, grade, videoTitle);
     if (!exists) return false;
     return true;
-    // } on FirebaseException catch (e) {
-    //   // if (context.mounted) {
-    //   //   CustomDialog(title: 'error', desc: e.code, dialogType: DialogType.error)
-    //   //       .showdialog(context);
-    //   // }
-    //   return false;
-    // }
   }
 }

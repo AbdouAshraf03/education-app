@@ -23,13 +23,13 @@ class Secondary extends StatelessWidget {
     return title;
   }
 
-  Future<List<String>?> _getSections() async {
+  Future<Map<String, dynamic>?> _getSections() async {
     // print(
     //     "Calling getSectionsNames with title: ${getSecondaryTitle()}"); // Debugging statement
-    List? sections =
+    Map<String, dynamic>? sections =
         await FirebaseRetrieve().getSectionsNames(getSecondaryTitle());
     //print("Sections: $sections"); // Debugging statement
-    return sections?.cast<String>();
+    return sections;
   }
 
   @override

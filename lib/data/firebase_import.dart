@@ -7,7 +7,7 @@ class FirebaseImport {
     await FirebaseFirestore.instance
         .collection('students')
         .doc(uid)
-        .set({'id': uid, 'userMainData': mainUserData});
+        .set({'userMainData': mainUserData});
   }
 
   Future<bool> editProfile(String email, String fname, String lname,
@@ -20,7 +20,7 @@ class FirebaseImport {
           'fname': fname,
           'lname': lname,
           'phoneNumber': phoneNumber,
-          'graduate': graduate
+          'graduate': graduate,
         }
       });
       return true;
@@ -30,7 +30,8 @@ class FirebaseImport {
     }
   }
 
-  Future<bool> importVideoData(String videoId, String section) async {
+  Future<bool> importVideoData(
+      String videoId, String section, String grade, String videoTitle) async {
     try {
       String uid = FirebaseAuth.instance.currentUser!.uid;
       var snapshot = await FirebaseFirestore.instance
@@ -43,6 +44,8 @@ class FirebaseImport {
         snapshot.reference.set({
           'id': videoId,
           'section': section,
+          'grade': grade,
+          'title': videoTitle,
           'purchased_date': Timestamp.fromDate(DateTime.now())
         });
         return true;
