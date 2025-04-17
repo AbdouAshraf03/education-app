@@ -7,12 +7,12 @@ class VideoPage extends StatelessWidget {
   const VideoPage({super.key});
 
   Future<List<Map<String, dynamic>>> _getMyVideos() async =>
-      await FirebaseRetrieve().getMyVideos();
+      await FirebaseRetrieve().getMyVideos() ?? [];
   Future<List?> _getVideos() async {
     var data = await _getMyVideos();
-    List videosData = await FirebaseRetrieve().getMyVideosFromList(data);
+    List videosData = await FirebaseRetrieve().getMyVideosFromList(data) ?? [];
     for (int i = 0; i < videosData.length; i++) {
-      videosData[i].addAll({'purchased_data': data[i]['purchased_data']});
+      videosData[i].addAll({'purchased_date': data[i]['purchased_date']});
     }
     return videosData;
   }

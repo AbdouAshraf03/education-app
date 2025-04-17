@@ -4,7 +4,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseRetrieve {
   //final String? uid = FirebaseAuth.instance.currentUser?.uid;
-
+  static const Map<int, String> _collectionNames = {
+    1: '1st_secondary',
+    2: '2nd_secondary',
+    3: '3rd_secondary',
+  };
   Map? getUserDataFromGoogle() {
     // Trigger the authentication flow
     try {
@@ -18,21 +22,14 @@ class FirebaseRetrieve {
   }
 
   Future<List<String>?> getSectionsNames(String collectionName) async {
-    //try {
-    //TODO: change this
     var sections = await FirebaseFirestore.instance
         .collection(collectionName)
-        .doc(collectionName == '1st_secondary' ||
-                collectionName == '2nd_secondary'
-            ? 'sections'
-            : 'section')
+        .doc('section')
         .get();
-    // print(sections.data()!['section_names']);
+    if (sections.data() == null) {
+      return null;
+    }
     return sections.data()!['section_names'].cast<String>();
-    // } catch (e) {
-    //   print(e);
-    // }
-    // return ['Null'];
   }
 
   Future<List<String>?> getUserEmailAndName() async {
@@ -62,7 +59,7 @@ class FirebaseRetrieve {
           .doc(uid)
           .get();
       Map<String, dynamic> mainData = userData.data()!['userMainData'];
-      mainData.addAll({'id': uid});
+      // mainData.addAll({'id': uid});
       return mainData;
     } catch (e) {
       print(e);
@@ -70,23 +67,7 @@ class FirebaseRetrieve {
     }
   }
 
-// <<<<<<< HEAD
-//   Future<List<Map<String, dynamic>>> getMyVideos() async {
-//     try {
-//       final String uid = FirebaseAuth.instance.currentUser!.uid;
-//       var snapshot = await FirebaseFirestore.instance
-//           .collection('students')
-//           .doc(uid)
-//           .collection('user_videos')
-//           .get();
-
-//       return snapshot.docs.map((doc) => doc.data()).toList();
-//     } catch (e) {
-//       print(e);
-//     }
-//     return [];
-// =======
-  Future<List<Map<String, dynamic>>> getMyVideos() async {
+  Future<List<Map<String, dynamic>>?> getMyVideos() async {
     try {
       List<Map<String, dynamic>> videosList = [];
       final String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -96,14 +77,7 @@ class FirebaseRetrieve {
           .get();
       String graduate = userData.data()!['userMainData']['graduate'].toString();
       // print(graduate);
-      if (graduate == '3') {
-        graduate = '3rd_secondary';
-      } else if (graduate == '2') {
-        graduate = '2nd_secondary';
-      } else {
-        graduate = '1st_secondary';
-      }
-      videosList.add({'graduate': graduate});
+      graduate = _collectionNames[int.parse(graduate)]!;
       var videosData = await FirebaseFirestore.instance
           .collection('students')
           .doc(uid)
@@ -117,43 +91,40 @@ class FirebaseRetrieve {
       //print(videosList);
       return videosList;
     } catch (e) {
-      print(e.toString() + ' =======================');
+      print(e);
     }
-    return [{}, {}];
+    return null;
   }
 
-  Future<List<Map<String, dynamic>>> getMyVideosFromList(
+  Future<List<Map<String, dynamic>>?> getMyVideosFromList(
       List<Map<String, dynamic>> videosMapList) async {
     try {
       List<Map<String, dynamic>> videosData = [];
-      String graduate = videosMapList[0]['graduate'];
-      videosMapList.removeAt(0);
-      print(videosMapList);
+
       for (var video in videosMapList) {
-        var data = await _getVideoData(video['id'], graduate, video['section']);
+        var data = await _getVideoData(
+            video['id'], video['graduate'], video['section']);
         videosData.add(data);
       }
 
       return videosData;
-    } on Exception catch (e) {
+    } catch (e) {
       print(e);
-      return [];
+      return null;
     }
   }
 
   Future _getVideoData(String videoId, String graduate, String section) async {
     var snapshot = await FirebaseFirestore.instance
         .collection(graduate)
-        //TODO : change this
         .doc('section')
         .collection(section)
         .doc(videoId)
         .get();
-    //print(snapshot.data());
+    if (!snapshot.exists) {
+      return null;
+    }
     return snapshot.data();
-    // } catch (e) {
-    //   print(e.toString() + ' =======================');
-    // }
   }
 
   Future<List<Map<String, dynamic>>?> getVideos(
