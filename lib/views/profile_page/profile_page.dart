@@ -106,7 +106,7 @@ class ProfilePage extends StatelessWidget {
               _lnameController.text = data['lname'];
               _phoneController.text = data['phoneNumber'];
               _selectedGrade = data['graduate'];
-              _codeController.text = data['id'];
+              _codeController.text = data['user_code'];
               return SingleChildScrollView(
                 child: Center(
                   child: SizedBox(

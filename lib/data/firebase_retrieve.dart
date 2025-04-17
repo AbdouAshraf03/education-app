@@ -102,14 +102,14 @@ class FirebaseRetrieve {
       List<Map<String, dynamic>> videosData = [];
 
       for (var video in videosMapList) {
-        var data = await _getVideoData(
-            video['id'], video['graduate'], video['section']);
+        var data =
+            await _getVideoData(video['id'], video['grade'], video['section']);
         videosData.add(data);
       }
 
       return videosData;
     } catch (e) {
-      print(e);
+      print('$e=====================');
       return null;
     }
   }
@@ -124,6 +124,7 @@ class FirebaseRetrieve {
     if (!snapshot.exists) {
       return null;
     }
+
     return snapshot.data();
   }
 
