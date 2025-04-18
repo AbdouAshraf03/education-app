@@ -69,7 +69,8 @@ class FirebaseImport {
       "User_ID": userID,
       "Name": name,
       "Email": email,
-      "Time": DateTime.now(),
+      "Type": 'Normal',
+      "Date": Timestamp.fromDate(DateTime.now())
     });
     return snapshot.then((value) {
       print("Data added to logs successfully");
