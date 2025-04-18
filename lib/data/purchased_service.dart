@@ -49,32 +49,31 @@ class PurchasedService {
 
     var userCodeSnapshot =
         await FirebaseFirestore.instance.collection('students').doc(uid).get();
-    if (!userCodeSnapshot.exists) {
+    if (userCodeSnapshot.exists) {
       userCode = userCodeSnapshot.data()!['userMainData']['user_code'];
-      userName = userCodeSnapshot.data()!['userMainData']['fname'].toString() +
-          ' ' +
-          userCodeSnapshot.data()!['userMainData']['lname'].toString();
+      userName =
+          '${userCodeSnapshot.data()!['userMainData']['fname']} ${userCodeSnapshot.data()!['userMainData']['lname']}';
       userEmail = userCodeSnapshot.data()!['userMainData']['email'].toString();
     } else {
       return false;
     }
 
-    if (!exists) {
+    if (exists) {
       FirebaseImport().addToLogs(
           status: 'success',
           lecture: videoTitle,
           userID: userCode,
           name: userName,
           email: userEmail);
+      return true;
+    } else {
+      FirebaseImport().addToLogs(
+          status: 'failed',
+          lecture: videoTitle,
+          userID: userCode,
+          name: userName,
+          email: userEmail);
       return false;
     }
-
-    FirebaseImport().addToLogs(
-        status: 'success',
-        lecture: videoTitle,
-        userID: userCode,
-        name: userName,
-        email: userEmail);
-    return true;
   }
 }

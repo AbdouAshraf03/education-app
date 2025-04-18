@@ -63,7 +63,7 @@ class FirebaseImport {
       required String userID,
       required String name,
       required String email}) {
-    var snapshot = FirebaseFirestore.instance.collection('students').doc().set({
+    var snapshot = FirebaseFirestore.instance.collection('logs').doc().set({
       "Status": status,
       "Lecture": lecture,
       "User_ID": userID,
