@@ -76,7 +76,8 @@ flutter:
     - assets/images/
     - assets/lottie/
     - assets/logos/
-    - .env # Add this line
+    - .env
+    - shorebird.yaml # Add this line
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
