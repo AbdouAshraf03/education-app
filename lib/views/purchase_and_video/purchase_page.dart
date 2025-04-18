@@ -25,6 +25,7 @@ class PurchasePage extends StatefulWidget {
 
 class _PurchasePageState extends State<PurchasePage> {
   // Helper method to show an error dialog
+  bool isLoading = false;
   void _showErrorDialog(BuildContext context, String message) {
     CustomDialog(
       title: 'Error',
@@ -46,105 +47,125 @@ class _PurchasePageState extends State<PurchasePage> {
     return showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: Text(
-            'ادخل كود الشراء',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'roboto',
-                ),
-          ),
-          content: TextField(
-            controller: PurchasePage._textFieldController,
-            keyboardType: TextInputType.multiline,
-            //obscureText: passwordVisible,
-            enableSuggestions: false,
-
-            // textDirection: TextDirection.rtl,
-            cursorColor: const Color.fromARGB(255, 28, 113, 194),
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(fontFamily: 'roboto'),
-            decoration: InputDecoration(
-              focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                  borderSide: BorderSide(
-                    color: Color.fromARGB(255, 28, 113, 194),
-                  )),
-              // prefixIcon: Icon(, color: Colors.grey),
-              floatingLabelAlignment: FloatingLabelAlignment.start,
-
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              ),
-              labelText: 'الكود',
-              labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            title: Text(
+              'ادخل كود الشراء',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.grey,
-                    textBaseline: TextBaseline.alphabetic,
+                    fontFamily: 'roboto',
                   ),
             ),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              child: Text('CANCEL'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+            content: TextField(
+              controller: PurchasePage._textFieldController,
+              keyboardType: TextInputType.multiline,
+              //obscureText: passwordVisible,
+              enableSuggestions: false,
+
+              // textDirection: TextDirection.rtl,
+              cursorColor: const Color.fromARGB(255, 28, 113, 194),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontFamily: 'roboto'),
+              decoration: InputDecoration(
+                focusedBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    borderSide: BorderSide(
+                      color: Color.fromARGB(255, 28, 113, 194),
+                    )),
+                // prefixIcon: Icon(, color: Colors.grey),
+                floatingLabelAlignment: FloatingLabelAlignment.start,
+
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                ),
+                labelText: 'الكود',
+                labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.grey,
+                      textBaseline: TextBaseline.alphabetic,
+                    ),
+              ),
             ),
-            ElevatedButton(
-                child: Text('OK'),
-                onPressed: () async {
-                  // Ensure the context is still valid
-                  if (!context.mounted) return;
+            actions: <Widget>[
+              ElevatedButton(
+                child: Text('CANCEL'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ElevatedButton(
+                  child: isLoading
+                      ? SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: LottieLoader(),
+                        )
+                      : Text('OK'),
+                  onPressed: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    if (!context.mounted) return;
 
-                  // Get the code from the text field
-                  final String code = PurchasePage._textFieldController.text;
+                    final String code = PurchasePage._textFieldController.text;
 
-                  try {
-                    // Step 1: Validate the code
-                    final bool isValid =
-                        await PurchasedService().isValidCode(code, context);
-                    if (!isValid) {
-                      if (context.mounted) {
-                        _showErrorDialog(context, "الكود غير صحيح");
+                    try {
+                      final bool isValid =
+                          await PurchasedService().isValidCode(code, context);
+                      if (!isValid) {
+                        if (context.mounted) {
+                          _showErrorDialog(context, "الكود غير صحيح");
+                        }
+                        setState(() {
+                          isLoading = false;
+                        });
+                        return;
                       }
-                      return;
-                    }
-                    final bool isUsedCode = await PurchasedService()
-                        .isUsedCode(widget.routeArg['vid_code']);
-                    if (isUsedCode) {
-                      if (context.mounted) {
-                        _showErrorDialog(context, "تم استخدامه مسبقًا");
+                      final bool isUsedCode = await PurchasedService()
+                          .isUsedCode(widget.routeArg['vid_code']);
+                      if (isUsedCode) {
+                        if (context.mounted) {
+                          _showErrorDialog(context, "تم استخدامه مسبقًا");
+                        }
+                        setState(() {
+                          isLoading = false;
+                        });
+                        return;
                       }
-                      return;
-                    }
-                    // Step 2: Purchase the code
-                    final bool isPurchased =
-                        await PurchasedService().purchasedCode(
-                      code: code,
-                      videoCode: widget.routeArg['vid_code'],
-                      section: widget.routeArg['section'],
-                      grade: widget.routeArg['grade'],
-                      videoTitle: widget.routeArg['title'],
-                    );
+                      // Step 2: Purchase the code
+                      final bool isPurchased =
+                          await PurchasedService().purchasedCode(
+                        code: code,
+                        videoCode: widget.routeArg['vid_code'],
+                        section: widget.routeArg['section'],
+                        grade: widget.routeArg['grade'],
+                        videoTitle: widget.routeArg['title'],
+                      );
 
-                    // Step 3: Show success dialog if purchase is successful
-                    if (isPurchased && context.mounted) {
-                      _showSuccessDialog(context, "تم شراء المحاضرة بنجاح");
+                      // Step 3: Show success dialog if purchase is successful
+                      if (isPurchased && context.mounted) {
+                        _showSuccessDialog(context, "تم شراء المحاضرة بنجاح");
+                        setState(() {
+                          isLoading = true;
+                        });
+                      }
+                    } catch (e) {
+                      // Handle any unexpected errors
+                      if (context.mounted) {
+                        _showErrorDialog(context, "حدث خطأ غير متوقع: $e");
+                        setState(() {
+                          isLoading = true;
+                        });
+                      }
                     }
-                  } catch (e) {
-                    // Handle any unexpected errors
-                    if (context.mounted) {
-                      _showErrorDialog(context, "حدث خطأ غير متوقع: $e");
-                    }
-                  }
-                }),
-          ],
-        );
+                  }),
+            ],
+          );
+        });
       },
     );
   }
