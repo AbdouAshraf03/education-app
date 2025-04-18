@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:mr_samy_elmalah/core/app_assets.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/data/firebase_auth_service.dart';
 import 'package:mr_samy_elmalah/data/firebase_retrieve.dart';
@@ -70,8 +71,9 @@ class _MyDrawerState extends State<MyDrawer> {
                             ),
                       ),
                       currentAccountPicture: CircleAvatar(
+                        backgroundColor: Colors.transparent,
                         backgroundImage: AssetImage(
-                          'assets/images/3math_logo-removebg.png',
+                          LogoAppAssets.logoNoPg,
                         ),
                       ),
                       accountEmail: Text(

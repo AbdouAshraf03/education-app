@@ -7,6 +7,8 @@ import 'package:mr_samy_elmalah/data/firebase_auth_service.dart';
 import 'package:mr_samy_elmalah/widgets/custom_text_field.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
+import '../../core/app_assets.dart';
+
 // ignore: must_be_immutable
 class LogInPage extends StatefulWidget {
   const LogInPage({super.key});
@@ -42,8 +44,7 @@ class _LogInPageState extends State<LogInPage> {
                     decoration: const BoxDecoration(
                       //color: Colors.blue,
                       image: DecorationImage(
-                          image: AssetImage(
-                              'assets/logos/3math_logo-removebg.png')),
+                          image: AssetImage(LogoAppAssets.logoNoPg)),
                       //borderRadius: BorderRadius.only(),
                     ),
                   ),
@@ -227,7 +228,8 @@ class _LogInPageState extends State<LogInPage> {
                                 ? null
                                 : DecorationImage(
                                     image: AssetImage(
-                                        'assets/images/icons8-google-48.png'),
+                                      ImageAppAssets.google48,
+                                    ),
                                   ),
                             borderRadius: BorderRadius.circular(10)),
                         child: isLoading
@@ -258,8 +260,7 @@ class _LogInPageState extends State<LogInPage> {
                               width: 0.5,
                             ),
                             image: DecorationImage(
-                                image: AssetImage(
-                                    'assets/images/icons8-facebook-96.png'),
+                                image: AssetImage(ImageAppAssets.facebook96),
                                 scale: 1.9),
                             color: Color(0xff039BE5),
                             borderRadius: BorderRadius.circular(10)),

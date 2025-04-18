@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:mr_samy_elmalah/core/app_assets.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/data/firebase_auth_service.dart';
 import 'package:mr_samy_elmalah/data/firebase_import.dart';
@@ -88,8 +89,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       decoration: const BoxDecoration(
                         //color: Colors.blue,
                         image: DecorationImage(
-                            image: AssetImage(
-                                'assets/logos/3math_logo-removebg.png')),
+                          image: AssetImage(LogoAppAssets.logoNoPg),
+                        ),
                         //borderRadius: BorderRadius.only(),
                       ),
                     ),
