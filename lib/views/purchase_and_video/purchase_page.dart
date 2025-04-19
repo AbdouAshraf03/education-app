@@ -184,15 +184,6 @@ class _PurchasePageState extends State<PurchasePage> {
       appBar: AppBar(
         shadowColor: Colors.transparent,
         centerTitle: false,
-
-        // title: Text(
-        //   "شراء المحاضرة",
-        //   //textAlign: TextAlign.right,
-        //   style: Theme.of(context)
-        //       .textTheme
-        //       .bodyMedium!
-        //       .copyWith(fontWeight: FontWeight.bold),
-        // ),
         actions: [
           Center(
             child: Text(

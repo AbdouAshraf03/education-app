@@ -35,7 +35,7 @@ dependencies:
   crystal_navigation_bar: ^1.0.2
   cupertino_icons: ^1.0.8
   day_night_themed_switcher: ^1.2.5
-  # device_info_plus: ^11.3.3
+  device_info_plus: ^11.3.0
   firebase_auth: ^5.5.0
   firebase_core: ^3.11.0
   flutter:

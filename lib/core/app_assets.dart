@@ -1,6 +1,6 @@
 abstract final class ImageAppAssets {
   static const String facebook48 = 'assets/images/icons8-facebook-48.png';
-  static const String facebook96 = 'assets/images/icons8-google-96.png';
+  static const String facebook96 = 'assets/images/icons8-facebook-96.png';
   static const String google48 = 'assets/images/icons8-google-48.png';
   static const String firstYear = 'assets/images/1st.png';
   static const String secondYear = 'assets/images/2nd.png';
