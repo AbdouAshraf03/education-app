@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mr_samy_elmalah/data/assistant_methods.dart';
 
 class FirebaseImport {
   final String? uid = FirebaseAuth.instance.currentUser?.uid;
   Future<void> importUserData(Map<String, dynamic> mainUserData) async {
-    await FirebaseFirestore.instance
-        .collection('students')
-        .doc(uid)
-        .set({'userMainData': mainUserData});
+    await FirebaseFirestore.instance.collection('students').doc(uid).set({
+      'userMainData': mainUserData,
+      'device_id': await AssistantMethods.getDeviceId()
+    });
   }
 
   Future<bool> editProfile(String email, String fname, String lname,
