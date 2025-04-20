@@ -129,6 +129,7 @@ class _MainPageState extends State<MainPage> {
             appBar: AppBar(
               toolbarHeight: 65,
               leadingWidth: 80,
+              shadowColor: Colors.transparent,
               automaticallyImplyLeading: false,
               leading: config.leading,
               actions: config.actions,

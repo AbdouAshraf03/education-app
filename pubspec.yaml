@@ -100,5 +100,9 @@ flutter:
     - family: roboto
       fonts:
         - asset: assets/fonts/Roboto-Regular.ttf
+
+    - family: card
+      fonts:
+        - asset: assets/fonts/CREDC.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
