@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+
 import 'package:mr_samy_elmalah/data/firebase_import.dart';
 
-class PurchasedService {
-  Future<bool> isValidCode(String code, BuildContext context) async {
+abstract class PurchasedService {
+  static Future<bool> isValidCode(String code) async {
     var snapshot =
         await FirebaseFirestore.instance.collection('codes').doc(code).get();
     if (snapshot.exists) {
@@ -15,7 +15,7 @@ class PurchasedService {
     }
   }
 
-  Future<bool> isUsedCode(String codeId) async {
+  static Future<bool> isUsedCode(String codeId) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     var snapshot = await FirebaseFirestore.instance
         .collection('students')
@@ -30,7 +30,7 @@ class PurchasedService {
     }
   }
 
-  Future<bool> purchasedCode(
+  static Future<bool> purchasedCode(
       {required String code,
       required String videoCode,
       required String section,
@@ -75,5 +75,11 @@ class PurchasedService {
           email: userEmail);
       return false;
     }
+  }
+
+  static Future<void> assignCodeUser(String code, String uid) async {
+    var snapshot =
+        await FirebaseFirestore.instance.collection('codes').doc(code).get();
+    await snapshot.reference.update({'user_id': uid});
   }
 }

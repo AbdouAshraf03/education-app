@@ -28,7 +28,7 @@ class HomeViewModel {
     const HomePage(),
     AiPage(),
     const VideoPage(),
-    const WalletPage(),
+    WalletPage(),
   ];
   HomeViewModel(this.context);
   List<AppBarConfig> get appBarConfigs => [

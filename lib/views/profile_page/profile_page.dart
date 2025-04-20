@@ -101,12 +101,12 @@ class ProfilePage extends StatelessWidget {
             }
             if (snapshot.hasData) {
               final data = snapshot.data!;
-              _emailController.text = data['email'];
-              _fnameController.text = data['fname'];
-              _lnameController.text = data['lname'];
-              _phoneController.text = data['phoneNumber'];
-              _selectedGrade = data['graduate'];
-              _codeController.text = data['user_code'];
+              _emailController.text = data['email'] ?? "";
+              _fnameController.text = data['fname'] ?? '';
+              _lnameController.text = data['lname'] ?? '';
+              _phoneController.text = data['phoneNumber'] ?? '';
+              _selectedGrade = data['graduate'] ?? '';
+              _codeController.text = data['user_code'] ?? '';
               return SingleChildScrollView(
                 child: Center(
                   child: SizedBox(

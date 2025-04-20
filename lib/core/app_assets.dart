@@ -6,6 +6,7 @@ abstract final class ImageAppAssets {
   static const String secondYear = 'assets/images/2nd.png';
   static const String thirdYear = 'assets/images/3rd.png';
   static const String mastercard = 'assets/images/Mastercard-logo.png';
+  static const String fawry = 'assets/images/fawryLogo.png';
 }
 
 abstract final class LogoAppAssets {

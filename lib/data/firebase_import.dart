@@ -15,14 +15,12 @@ class FirebaseImport {
       String phoneNumber, int graduate) async {
     try {
       String uid = FirebaseAuth.instance.currentUser!.uid;
-      await FirebaseFirestore.instance.collection('students').doc(uid).set({
-        'userMainData': {
-          'email': email,
-          'fname': fname,
-          'lname': lname,
-          'phoneNumber': phoneNumber,
-          'graduate': graduate,
-        }
+      await FirebaseFirestore.instance.collection('students').doc(uid).update({
+        'userMainData.email': email,
+        'userMainData.fname': fname,
+        'userMainData.lname': lname,
+        'userMainData.phoneNumber': phoneNumber,
+        'userMainData.graduate': graduate,
       });
       return true;
     } on FirebaseException catch (e) {

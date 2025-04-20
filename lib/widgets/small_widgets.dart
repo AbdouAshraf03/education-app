@@ -9,7 +9,7 @@ class LottieLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
         child: Lottie.asset(
-          LottieAppAssets.loader2,
+          LottieAppAssets.loader1,
           height: 130.0,
           width: 130.0,
         ),

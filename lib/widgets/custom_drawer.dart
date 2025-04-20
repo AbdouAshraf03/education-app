@@ -198,6 +198,23 @@ class _MyDrawerState extends State<MyDrawer> {
                     .pushReplacementNamed(AppRoutes.mainPage, arguments: 2);
               },
             ),
+            //! my Wallet
+            ListTile(
+              trailing: Icon(
+                Iconsax.wallet_1_copy,
+                color: Theme.of(context).primaryIconTheme.color,
+              ),
+              title: Text("محفظتي",
+                  textAlign: TextAlign.right,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      )),
+              onTap: () {
+                Navigator.of(context)
+                    .pushReplacementNamed(AppRoutes.mainPage, arguments: 3);
+              },
+            ),
 
             Divider(
               color: Theme.of(context).primaryIconTheme.color,

@@ -1,5 +1,3 @@
-// import 'package:awesome_dialog/awesome_dialog.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +7,8 @@ import 'package:mr_samy_elmalah/data/purchased_service.dart';
 import 'package:mr_samy_elmalah/widgets/custom_drawer.dart';
 import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
-// import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
+
+import '../../widgets/custom_dialog.dart';
 
 class PurchasePage extends StatefulWidget {
   const PurchasePage(
@@ -43,131 +42,61 @@ class _PurchasePageState extends State<PurchasePage> {
     ).showdialog(context);
   }
 
-  Future<void> _displayTextInputDialog(BuildContext context) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(builder: (context, setState) {
-          return AlertDialog(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            title: Text(
-              'ادخل كود الشراء',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'roboto',
-                  ),
-            ),
-            content: TextField(
-              controller: PurchasePage._textFieldController,
-              keyboardType: TextInputType.multiline,
-              //obscureText: passwordVisible,
-              enableSuggestions: false,
+  void addPurchased(BuildContext context) async {
+    setState(() {
+      isLoading = true;
+    });
+    if (!context.mounted) return;
 
-              // textDirection: TextDirection.rtl,
-              cursorColor: const Color.fromARGB(255, 28, 113, 194),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(fontFamily: 'roboto'),
-              decoration: InputDecoration(
-                focusedBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                    borderSide: BorderSide(
-                      color: Color.fromARGB(255, 28, 113, 194),
-                    )),
-                // prefixIcon: Icon(, color: Colors.grey),
-                floatingLabelAlignment: FloatingLabelAlignment.start,
+    final String code = PurchasePage._textFieldController.text;
 
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                ),
-                labelText: 'الكود',
-                labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.grey,
-                      textBaseline: TextBaseline.alphabetic,
-                    ),
-              ),
-            ),
-            actions: <Widget>[
-              ElevatedButton(
-                child: Text('CANCEL'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              ElevatedButton(
-                  child: isLoading
-                      ? SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: LottieLoader(),
-                        )
-                      : Text('OK'),
-                  onPressed: () async {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    if (!context.mounted) return;
-
-                    final String code = PurchasePage._textFieldController.text;
-
-                    try {
-                      final bool isValid =
-                          await PurchasedService().isValidCode(code, context);
-                      if (!isValid) {
-                        if (context.mounted) {
-                          _showErrorDialog(context, "الكود غير صحيح");
-                        }
-                        setState(() {
-                          isLoading = false;
-                        });
-                        return;
-                      }
-                      final bool isUsedCode = await PurchasedService()
-                          .isUsedCode(widget.routeArg['vid_code']);
-                      if (isUsedCode) {
-                        if (context.mounted) {
-                          _showErrorDialog(context, "تم استخدامه مسبقًا");
-                        }
-                        setState(() {
-                          isLoading = false;
-                        });
-                        return;
-                      }
-                      // Step 2: Purchase the code
-                      final bool isPurchased =
-                          await PurchasedService().purchasedCode(
-                        code: code,
-                        videoCode: widget.routeArg['vid_code'],
-                        section: widget.routeArg['section'],
-                        grade: widget.routeArg['grade'],
-                        videoTitle: widget.routeArg['title'],
-                      );
-
-                      // Step 3: Show success dialog if purchase is successful
-                      if (isPurchased && context.mounted) {
-                        _showSuccessDialog(context, "تم شراء المحاضرة بنجاح");
-                        setState(() {
-                          isLoading = true;
-                        });
-                      }
-                    } catch (e) {
-                      // Handle any unexpected errors
-                      if (context.mounted) {
-                        _showErrorDialog(context, "حدث خطأ غير متوقع: $e");
-                        setState(() {
-                          isLoading = true;
-                        });
-                      }
-                    }
-                  }),
-            ],
-          );
+    try {
+      final bool isValid = await PurchasedService.isValidCode(code);
+      if (!isValid) {
+        if (context.mounted) {
+          _showErrorDialog(context, "الكود غير صحيح");
+        }
+        setState(() {
+          isLoading = false;
         });
-      },
-    );
+        return;
+      }
+      final bool isUsedCode =
+          await PurchasedService.isUsedCode(widget.routeArg['vid_code']);
+      if (isUsedCode) {
+        if (context.mounted) {
+          _showErrorDialog(context, "تم استخدامه مسبقًا");
+        }
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+      // Step 2: Purchase the code
+      final bool isPurchased = await PurchasedService.purchasedCode(
+        code: code,
+        videoCode: widget.routeArg['vid_code'],
+        section: widget.routeArg['section'],
+        grade: widget.routeArg['grade'],
+        videoTitle: widget.routeArg['title'],
+      );
+
+      // Step 3: Show success dialog if purchase is successful
+      if (isPurchased && context.mounted) {
+        _showSuccessDialog(context, "تم شراء المحاضرة بنجاح");
+        setState(() {
+          isLoading = true;
+        });
+      }
+    } catch (e) {
+      // Handle any unexpected errors
+      if (context.mounted) {
+        _showErrorDialog(context, "حدث خطأ غير متوقع: $e");
+        setState(() {
+          isLoading = true;
+        });
+      }
+    }
   }
 
   int _getTimeRemaining(DateTime purchasedDate) {
@@ -274,7 +203,11 @@ class _PurchasePageState extends State<PurchasePage> {
               MaterialButton(
                 onPressed: () {
                   if (!widget.isPurchased) {
-                    _displayTextInputDialog(context);
+                    displayTextInputDialog(
+                        context: context,
+                        isLoading: isLoading,
+                        controller: PurchasePage._textFieldController,
+                        btnOkOnPress: () => addPurchased(context));
                   }
                 },
                 shape: RoundedRectangleBorder(
