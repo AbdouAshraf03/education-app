@@ -7,6 +7,8 @@ import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../widgets/small_widgets.dart';
+
 class VideoPlayerPage extends StatefulWidget {
   final Uri videoUrl;
 
@@ -149,12 +151,6 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         ),
       );
     }
-    return Center(
-      child: Lottie.asset(
-        'assets/lottie/Animation - 1740337284424.json',
-        height: 130.0,
-        width: 130.0,
-      ),
-    );
+    return Center(child: LottieLoader());
   }
 }

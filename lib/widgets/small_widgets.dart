@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
+import '../core/app_assets.dart';
+
 class LottieLoader extends StatelessWidget {
   const LottieLoader({super.key});
   @override
   Widget build(BuildContext context) => Center(
         child: Lottie.asset(
-          'assets/lottie/Animation - 1740337284424.json',
+          LottieAppAssets.loader2,
           height: 130.0,
           width: 130.0,
         ),
@@ -19,7 +21,7 @@ class LottieNoData extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
         child: Lottie.asset(
-          'assets/lottie/NoData.json',
+          LottieAppAssets.noData,
           height: 200.0,
           width: 200.0,
         ),
@@ -31,7 +33,7 @@ class LottieError extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
         child: Lottie.asset(
-          'assets/lottie/AnimationError.json',
+          LottieAppAssets.error,
           height: 200.0,
           width: 200.0,
         ),
