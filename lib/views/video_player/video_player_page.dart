@@ -5,8 +5,6 @@ import 'package:mr_samy_elmalah/widgets/custom_drawer.dart';
 import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
-import 'package:lottie/lottie.dart';
-
 import '../../widgets/small_widgets.dart';
 
 class VideoPlayerPage extends StatefulWidget {

@@ -5,6 +5,7 @@ import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/views/main_pages/ai_page.dart';
 import 'package:mr_samy_elmalah/views/main_pages/home_page.dart';
 import 'package:mr_samy_elmalah/views/main_pages/video_page.dart';
+import 'package:mr_samy_elmalah/views/main_pages/wallet_page.dart';
 import 'package:mr_samy_elmalah/widgets/bottom_navigation_bar.dart';
 import 'package:mr_samy_elmalah/widgets/custom_drawer.dart';
 import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
@@ -27,6 +28,7 @@ class HomeViewModel {
     const HomePage(),
     AiPage(),
     const VideoPage(),
+    const WalletPage(),
   ];
   HomeViewModel(this.context);
   List<AppBarConfig> get appBarConfigs => [
@@ -54,6 +56,11 @@ class HomeViewModel {
         AppBarConfig(
           context: context,
           title: 'محاضراتي',
+          actions: [AnimatedMenuButton()],
+        ),
+        AppBarConfig(
+          context: context,
+          title: 'المحفظة',
           actions: [AnimatedMenuButton()],
         ),
       ];
