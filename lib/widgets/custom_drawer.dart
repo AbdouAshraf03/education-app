@@ -1,14 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:mr_samy_elmalah/core/app_assets.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/data/firebase_auth_service.dart';
 import 'package:mr_samy_elmalah/data/firebase_retrieve.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class MyDrawer extends StatelessWidget {
+class MyDrawer extends StatefulWidget {
   const MyDrawer({super.key});
+
+  @override
+  State<MyDrawer> createState() => _MyDrawerState();
+}
+
+class _MyDrawerState extends State<MyDrawer> {
   Future<List<String>?> _getuser() async =>
       await FirebaseRetrieve().getUserEmailAndName();
+
+  String appVersion = 'Loading...';
+
+  Future<void> _getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      appVersion = packageInfo.version;
+    });
+  }
+
+  @override
+  void initState() {
+    _getAppVersion();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,17 +48,18 @@ class MyDrawer extends StatelessWidget {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
                       child: SizedBox(
-                          width: 50,
-                          height: 50,
+                          width: 80,
+                          height: 80,
                           child: Center(child: LottieLoader())),
                     );
                   }
                   if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    return SizedBox(
+                        width: 80, height: 80, child: const LottieError());
                   }
                   if (!snapshot.hasData) {
-                    return const Text('No data available');
-                    // print(snapshot.data![1]);
+                    return SizedBox(
+                        width: 80, height: 80, child: const LottieNoData());
                   } else {
                     return UserAccountsDrawerHeader(
                       accountName: Text(
@@ -46,6 +70,12 @@ class MyDrawer extends StatelessWidget {
                               fontFamily: 'roboto',
                             ),
                       ),
+                      currentAccountPicture: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        backgroundImage: AssetImage(
+                          LogoAppAssets.logoNoPg,
+                        ),
+                      ),
                       accountEmail: Text(
                         snapshot.data![0],
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -54,21 +84,9 @@ class MyDrawer extends StatelessWidget {
                               fontFamily: 'roboto',
                             ),
                       ),
-                      // currentAccountPicture: CircleAvatar(
-                      //     // backgroundImage: NetworkImage(_imageurl == null
-                      //     //     ? 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSVqJm3fXSX67mLXUTYYaUqC_vGQsZtL3G8ickhGeuCVkWNWpbq'
-                      //     //     : _imageurl!), // Replace with your image link
-                      //     ),
-                      decoration: const BoxDecoration(
-                          // image: DecorationImage(
-                          //   image: NetworkImage(
-                          //       'https://media.istockphoto.com/id/525242101/vector/math-background.jpg?s=612x612&w=0&k=20&c=pxDSP3dYr2VfWWdcNfCmQ_jwhTGQb4FUTZzU54c1Djk='), // Replace with your background image link
-                          //   fit: BoxFit.cover,
-                          // ),
-                          ),
+                      decoration: const BoxDecoration(),
                     );
                   }
-                  //return SizedBox();
                 }),
 
             //! profile
@@ -180,20 +198,24 @@ class MyDrawer extends StatelessWidget {
                     .pushReplacementNamed(AppRoutes.mainPage, arguments: 2);
               },
             ),
-            // ListTile(
-            //   trailing: Icon(
-            //     Icons.nightlight_round,
-            //     color: Theme.of(context).primaryIconTheme.color,
-            //   ),
-            //   //leading:
-            //   title: Text("الوضع الداكن",
-            //       textAlign: TextAlign.right,
-            //       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            //             fontSize: 14,
-            //             fontWeight: FontWeight.bold,
-            //           )),
-            //   onTap: () {},
-            // ),
+            //! my Wallet
+            ListTile(
+              trailing: Icon(
+                Iconsax.wallet_1_copy,
+                color: Theme.of(context).primaryIconTheme.color,
+              ),
+              title: Text("محفظتي",
+                  textAlign: TextAlign.right,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      )),
+              onTap: () {
+                Navigator.of(context)
+                    .pushReplacementNamed(AppRoutes.mainPage, arguments: 3);
+              },
+            ),
+
             Divider(
               color: Theme.of(context).primaryIconTheme.color,
             ),
@@ -220,18 +242,14 @@ class MyDrawer extends StatelessWidget {
               },
             ),
 
-            // const Expanded(
-            //   // Takes all remaining space
-            //   child: SizedBox.shrink(), // Empty space to push content down
-            // ),
-
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Text(
-                "Version",
+                "Version $appVersion",
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'cairo',
                     ),
                 textAlign: TextAlign.center,
               ),

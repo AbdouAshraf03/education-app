@@ -5,14 +5,16 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/data/firebase_import.dart';
 import 'package:mr_samy_elmalah/data/firebase_retrieve.dart';
+import 'package:mr_samy_elmalah/data/security.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
 class FirebaseAuthService {
   String? uid = FirebaseAuth.instance.currentUser?.uid;
+
   String _getFriendlyErrorMessage(String code) {
     switch (code) {
       case 'invalid-email':
-        return 'The email address is badly formatted'; // Match Firebase's message
+        return 'The email address is badly formatted';
       case 'user-not-found':
         return 'No account found with this email';
       case 'wrong-password':
@@ -31,6 +33,25 @@ class FirebaseAuthService {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      //TODO: enable this after u finsh the app
+      /*
+      final String uid = Security.user;
+      final bool isLoginInAnotherDevice = await Security.handleLogin(uid);
+      if (!isLoginInAnotherDevice) {
+        return;
+      } else {
+        if (context.mounted) {
+          await signOut();
+        }
+        if (context.mounted) {
+          CustomDialog(
+                  title: 'Error',
+                  desc: 'The user is logged in from another device',
+                  dialogType: DialogType.error)
+              .showdialog(context);
+        }
+      }
+      */
     } on FirebaseAuthException catch (e) {
       // print(e.code);
       if (context.mounted) {
@@ -49,6 +70,7 @@ class FirebaseAuthService {
     try {
       final UserCredential credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+
       return credential;
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
@@ -79,24 +101,23 @@ class FirebaseAuthService {
       );
 
       // Step 2: Sign in to Firebase with the Google credential
-      final UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
 
-      // Step 3: Check if the email is already used
-      // bool emailUsed =
-      //     await FirebaseRetrieve().isTheEmailUsed(googleUser.email);
-      // if (emailUsed) {
-      //   if (context.mounted) {
-      //     CustomDialog(
-      //       title: 'Error',
-      //       desc: 'The email is already used.',
-      //       dialogType: DialogType.error,
-      //     ).showdialog(context);
-      //   }
-      //   return; // Exit if the email is already used
-      // }
-
-      // Step 4: Check if user data exists
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      final String uid = Security.user;
+      final bool isLoginInAnotherDevice = await Security.handleLogin(uid);
+      if (isLoginInAnotherDevice) {
+        if (context.mounted) {
+          await signOut();
+        }
+        if (context.mounted) {
+          CustomDialog(
+                  title: 'Error',
+                  desc: 'The user is logged in from another device',
+                  dialogType: DialogType.error)
+              .showdialog(context);
+        }
+        return;
+      }
       bool saveData = await FirebaseRetrieve().isThereUser();
       if (!saveData) {
         // Step 5: Save user data if it doesn't exist
@@ -106,6 +127,8 @@ class FirebaseAuthService {
           'lname': googleUser.displayName!.split(' ')[1],
           'phoneNumber': '',
           'graduate': 3,
+          'balance': 0,
+          'user_code': null
         });
       }
 

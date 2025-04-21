@@ -23,13 +23,13 @@ class Secondary extends StatelessWidget {
     return title;
   }
 
-  Future<List<String>?> _getSections() async {
+  Future<Map<String, dynamic>?> _getSections() async {
     // print(
     //     "Calling getSectionsNames with title: ${getSecondaryTitle()}"); // Debugging statement
-    List? sections =
+    Map<String, dynamic>? sections =
         await FirebaseRetrieve().getSectionsNames(getSecondaryTitle());
     //print("Sections: $sections"); // Debugging statement
-    return sections?.cast<String>();
+    return sections;
   }
 
   @override
@@ -37,19 +37,16 @@ class Secondary extends StatelessWidget {
     return FutureBuilder(
       future: _getSections(),
       builder: (context, snapshot) {
-        // print(
-        //     "FutureBuilder called with snapshot: ${snapshot.connectionState}"); // Debugging statement
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildScafold(context, LottieLoader());
         }
         if (snapshot.hasData) {
-          // Debugging statement
           final List<Widget> images = List.generate(
             snapshot.data!.length,
             (index) => DepartmentsCard(
-              title: snapshot.data![index],
-              imageUrl:
-                  'https://img.freepik.com/free-photo/cosmic-background-white-black-laser-lights_181624-27720.jpg?t=st=1740695009~exp=1740698609~hmac=daa65ecf700e0e9d34e4122bf32d2179db285bb2bf40cabb640935fb2feda4de&w=1380',
+              title: snapshot.data!.keys.toList()[index],
+              imageUrl: snapshot.data![snapshot.data!.keys.toList()[index]]
+                  ['image_url'],
             ),
           );
           return Scaffold(
@@ -90,7 +87,7 @@ class Secondary extends StatelessWidget {
                   Expanded(
                     child: VerticalCardPager(
                       width: MediaQuery.of(context).size.width - 40,
-                      titles: snapshot.data as List<String>, // required
+                      titles: snapshot.data!.keys.toList(), // required
                       images: images, // required
                       textStyle: TextStyle(
                         // decorationStyle: TextDecorationStyle.wavy,
@@ -129,7 +126,8 @@ class Secondary extends StatelessWidget {
                           context,
                           AppRoutes.departmentsVideosPage,
                           arguments: {
-                            'title': snapshot.data![index],
+                            'title':
+                                snapshot.data!.keys.toList()[index].toString(),
                             'graduate': getSecondaryTitle()
                           },
                         );

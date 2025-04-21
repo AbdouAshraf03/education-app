@@ -1,15 +1,15 @@
-// import 'package:awesome_dialog/awesome_dialog.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/data/purchased_service.dart';
 import 'package:mr_samy_elmalah/widgets/custom_drawer.dart';
 import 'package:mr_samy_elmalah/widgets/custom_menu_animation.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
-// import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
+
+import '../../widgets/custom_dialog.dart';
 
 class PurchasePage extends StatefulWidget {
   const PurchasePage(
@@ -25,6 +25,7 @@ class PurchasePage extends StatefulWidget {
 
 class _PurchasePageState extends State<PurchasePage> {
   // Helper method to show an error dialog
+  bool isLoading = false;
   void _showErrorDialog(BuildContext context, String message) {
     CustomDialog(
       title: 'Error',
@@ -42,109 +43,105 @@ class _PurchasePageState extends State<PurchasePage> {
     ).showdialog(context);
   }
 
-  Future<void> _displayTextInputDialog(BuildContext context) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: Text(
-            'ادخل كود الشراء',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'roboto',
-                ),
-          ),
-          content: TextField(
-            controller: PurchasePage._textFieldController,
-            keyboardType: TextInputType.multiline,
-            //obscureText: passwordVisible,
-            enableSuggestions: false,
+  void addPurchased(BuildContext context) async {
+    setState(() {
+      isLoading = true;
+    });
+    if (!context.mounted) return;
 
-            // textDirection: TextDirection.rtl,
-            cursorColor: const Color.fromARGB(255, 28, 113, 194),
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(fontFamily: 'roboto'),
-            decoration: InputDecoration(
-              focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                  borderSide: BorderSide(
-                    color: Color.fromARGB(255, 28, 113, 194),
-                  )),
-              // prefixIcon: Icon(, color: Colors.grey),
-              floatingLabelAlignment: FloatingLabelAlignment.start,
+    final String code = PurchasePage._textFieldController.text;
 
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              ),
-              labelText: 'الكود',
-              labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.grey,
-                    textBaseline: TextBaseline.alphabetic,
-                  ),
-            ),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              child: Text('CANCEL'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            ElevatedButton(
-                child: Text('OK'),
-                onPressed: () async {
-                  // Ensure the context is still valid
-                  if (!context.mounted) return;
+    try {
+      final bool isValid = await PurchasedService.isValidCode(
+        code,
+      );
+      final bool isValidVideoCode = await PurchasedService.isValidVideoCode(
+        code,
+        widget.routeArg['grade'],
+        widget.routeArg['section'],
+        widget.routeArg['vid_code'],
+      );
+      if (!isValid && !isValidVideoCode) {
+        if (context.mounted) {
+          _showErrorDialog(context, "الكود غير صحيح");
+        }
 
-                  // Get the code from the text field
-                  final String code = PurchasePage._textFieldController.text;
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+      final bool isUsedCode =
+          await PurchasedService.isUsedCode(widget.routeArg['vid_code']);
+      if (isUsedCode) {
+        if (context.mounted) {
+          _showErrorDialog(context, "تم استخدامه مسبقًا");
+        }
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+      // Step 2: Purchase the code
+      final bool isPurchased = await PurchasedService.purchasedCode(
+        code: code,
+        videoCode: widget.routeArg['vid_code'],
+        section: widget.routeArg['section'],
+        grade: widget.routeArg['grade'],
+        videoTitle: widget.routeArg['title'],
+      );
 
-                  try {
-                    // Step 1: Validate the code
-                    final bool isValid =
-                        await PurchasedService().isValidCode(code, context);
-                    if (!isValid) {
-                      if (context.mounted) {
-                        _showErrorDialog(context, "الكود غير صحيح");
-                      }
-                      return;
-                    }
-                    final bool isUsedCode = await PurchasedService()
-                        .isUsedCode(widget.routeArg['vid_code']);
-                    if (isUsedCode) {
-                      if (context.mounted) {
-                        _showErrorDialog(context, "تم استخدامه مسبقًا");
-                      }
-                      return;
-                    }
-                    // Step 2: Purchase the code
-                    final bool isPurchased =
-                        await PurchasedService().purchasedCode(
-                      code,
-                      widget.routeArg['vid_code'],
-                      widget.routeArg['section'],
-                    );
+      // Step 3: Show success dialog if purchase is successful
+      if (isPurchased && context.mounted) {
+        _showSuccessDialog(context, "تم شراء المحاضرة بنجاح");
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      // Handle any unexpected errors
+      if (context.mounted) {
+        _showErrorDialog(context, "حدث خطأ غير متوقع: $e");
+        setState(() {
+          isLoading = true;
+        });
+      }
+    }
+  }
 
-                    // Step 3: Show success dialog if purchase is successful
-                    if (isPurchased && context.mounted) {
-                      _showSuccessDialog(context, "تم شراء المحاضرة بنجاح");
-                    }
-                  } catch (e) {
-                    // Handle any unexpected errors
-                    if (context.mounted) {
-                      _showErrorDialog(context, "حدث خطأ غير متوقع: $e");
-                    }
-                  }
-                }),
-          ],
-        );
-      },
-    );
+  void addPurchasedForWallet(BuildContext context) async {
+    if (!context.mounted) return;
+
+    try {
+      final String isPurchased = await PurchasedService.purchasedCodeFromWallet(
+        amount: widget.routeArg['price'],
+        videoCode: widget.routeArg['vid_code'],
+        section: widget.routeArg['section'],
+        grade: widget.routeArg['grade'],
+        videoTitle: widget.routeArg['title'],
+      );
+
+      // Step 3: Show success dialog if purchase is successful
+      if (isPurchased == 'success' && context.mounted) {
+        _showSuccessDialog(context, "تم شراء المحاضرة بنجاح");
+      } else if (isPurchased == 'Not enough balance' && context.mounted) {
+        _showErrorDialog(context, 'رصيدك غير كافي');
+      } else if (isPurchased == 'error assigning code' && context.mounted) {
+        _showErrorDialog(context, 'خطأ في تعيين الكود');
+      } else if (isPurchased == 'error log' && context.mounted) {
+        _showErrorDialog(context, 'خطأ في تسجيل عملية الشراء');
+      } else {
+        if (context.mounted) {
+          _showErrorDialog(
+              context, 'حدث حطأ غير متوقع برجاء التأكد من امتلاكك المحاضره');
+        }
+      }
+    } catch (e) {
+      // Handle any unexpected errors
+      if (context.mounted) {
+        _showErrorDialog(context, "حدث خطأ غير متوقع: $e");
+      }
+    }
   }
 
   int _getTimeRemaining(DateTime purchasedDate) {
@@ -168,15 +165,6 @@ class _PurchasePageState extends State<PurchasePage> {
       appBar: AppBar(
         shadowColor: Colors.transparent,
         centerTitle: false,
-
-        // title: Text(
-        //   "شراء المحاضرة",
-        //   //textAlign: TextAlign.right,
-        //   style: Theme.of(context)
-        //       .textTheme
-        //       .bodyMedium!
-        //       .copyWith(fontWeight: FontWeight.bold),
-        // ),
         actions: [
           Center(
             child: Text(
@@ -243,7 +231,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     Text(
                       !widget.isPurchased
                           ? widget.routeArg['price'].toString()
-                          : '(ايام ${_getTimeRemaining((widget.routeArg['purchased_data'] as Timestamp).toDate()).toString()} )',
+                          : '(ايام ${_getTimeRemaining((widget.routeArg['purchased_date'] as Timestamp).toDate()).toString()} )',
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -263,11 +251,15 @@ class _PurchasePageState extends State<PurchasePage> {
                 ),
               ),
               SizedBox(height: 20),
-              //! purchase bottom
+              //! purchase botton
               MaterialButton(
                 onPressed: () {
                   if (!widget.isPurchased) {
-                    _displayTextInputDialog(context);
+                    displayTextInputDialog(
+                        context: context,
+                        isLoading: isLoading,
+                        controller: PurchasePage._textFieldController,
+                        btnOkOnPress: () => addPurchased(context));
                   }
                 },
                 shape: RoundedRectangleBorder(
@@ -295,11 +287,60 @@ class _PurchasePageState extends State<PurchasePage> {
                       SizedBox(
                         width: 5,
                       ),
-                      widget.isPurchased ? Icon(Icons.check) : SizedBox(),
+                      widget.isPurchased
+                          ? Icon(
+                              Icons.check,
+                              color:
+                                  Theme.of(context).textTheme.bodyMedium!.color,
+                            )
+                          : Icon(
+                              Iconsax.money,
+                              color:
+                                  Theme.of(context).textTheme.bodyMedium!.color,
+                            ),
                     ],
                   ),
                 ),
               ),
+              SizedBox(height: 15),
+              //! purchase botton for wallet
+              !widget.isPurchased
+                  ? MaterialButton(
+                      onPressed: () => addPurchasedForWallet(context),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      height: 45,
+                      minWidth: MediaQuery.of(context).size.width - 40,
+                      color: widget.isPurchased
+                          ? Colors.green
+                          : Theme.of(context).primaryColor,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width - 100,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'شراء المحاضره من المحفظه',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(Iconsax.wallet_1,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .color,
+                                size: 20),
+                          ],
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
               SizedBox(height: 45),
               //! video section name
               SizedBox(

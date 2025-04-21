@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:mr_samy_elmalah/core/app_assets.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/data/firebase_auth_service.dart';
 import 'package:mr_samy_elmalah/data/firebase_import.dart';
@@ -83,11 +84,16 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     //! image logo
                     Container(
-                        height: 100,
-                        width: 100,
-                        decoration: const BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.only())),
+                      height: 180,
+                      width: 180,
+                      decoration: const BoxDecoration(
+                        //color: Colors.blue,
+                        image: DecorationImage(
+                          image: AssetImage(LogoAppAssets.logoNoPg),
+                        ),
+                        //borderRadius: BorderRadius.only(),
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     //! title
                     Row(
