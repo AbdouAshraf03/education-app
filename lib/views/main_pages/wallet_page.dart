@@ -8,6 +8,7 @@ import '../../data/firebase_retrieve.dart';
 import '../../data/purchased_service.dart';
 import '../../data/wallet_service.dart';
 import '../../widgets/custom_dialog.dart';
+import '../../widgets/qr_scanner.dart';
 import '../../widgets/small_widgets.dart';
 
 class WalletPage extends StatefulWidget {
@@ -62,9 +63,11 @@ class _WalletPageState extends State<WalletPage> {
         isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
+      if (context.mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
 
       if (context.mounted) {
         CustomDialog(
@@ -269,9 +272,12 @@ class _WalletPageState extends State<WalletPage> {
                     color: Colors.white,
                   ),
                   title: 'QR Code',
-                  onPressed: () {
-                    print('QR Code clicked');
-                  },
+                  onPressed: () => displayTextInputDialogForScanner(
+                    context: context,
+                    controller: _controller,
+                    isLoading: isLoading,
+                    btnOkOnPress: () => addMoney(context),
+                  ),
                 ),
                 CustomPayMethod(
                   icon: const Icon(
