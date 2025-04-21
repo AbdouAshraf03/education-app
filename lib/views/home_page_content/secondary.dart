@@ -43,7 +43,7 @@ class Secondary extends StatelessWidget {
           return _buildScafold(context, LottieLoader());
         }
         if (snapshot.hasData) {
-          //print("Snapshot has data: ${snapshot.data}"); // Debugging statement
+          // Debugging statement
           final List<Widget> images = List.generate(
             snapshot.data!.length,
             (index) => DepartmentsCard(
@@ -146,6 +146,7 @@ class Secondary extends StatelessWidget {
           );
         }
         if (snapshot.hasError) {
+          print(snapshot.error);
           return _buildScafold(context, LottieError());
         }
         return _buildScafold(context, LottieNoData());

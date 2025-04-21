@@ -264,7 +264,13 @@ class _LogInPageState extends State<LogInPage> {
                             color: Color(0xff039BE5),
                             borderRadius: BorderRadius.circular(10)),
                         child: MaterialButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            CustomDialog(
+                                    title: 'قيد التطوير',
+                                    desc: '',
+                                    dialogType: DialogType.info)
+                                .showdialog(context);
+                          },
                         ),
                       ),
                     ],
