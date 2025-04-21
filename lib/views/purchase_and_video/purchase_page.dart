@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/data/purchased_service.dart';
@@ -95,6 +96,41 @@ class _PurchasePageState extends State<PurchasePage> {
         setState(() {
           isLoading = true;
         });
+      }
+    }
+  }
+
+  void addPurchasedForWallet(BuildContext context) async {
+    if (!context.mounted) return;
+
+    try {
+      final String isPurchased = await PurchasedService.purchasedCodeFromWallet(
+        amount: widget.routeArg['price'],
+        videoCode: widget.routeArg['vid_code'],
+        section: widget.routeArg['section'],
+        grade: widget.routeArg['grade'],
+        videoTitle: widget.routeArg['title'],
+      );
+
+      // Step 3: Show success dialog if purchase is successful
+      if (isPurchased == 'success' && context.mounted) {
+        _showSuccessDialog(context, "تم شراء المحاضرة بنجاح");
+      } else if (isPurchased == 'Not enough balance' && context.mounted) {
+        _showErrorDialog(context, 'رصيدك غير كافي');
+      } else if (isPurchased == 'error assigning code' && context.mounted) {
+        _showErrorDialog(context, 'خطأ في تعيين الكود');
+      } else if (isPurchased == 'error log' && context.mounted) {
+        _showErrorDialog(context, 'خطأ في تسجيل عملية الشراء');
+      } else {
+        if (context.mounted) {
+          _showErrorDialog(
+              context, 'حدث حطأ غير متوقع برجاء التأكد من امتلاكك المحاضره');
+        }
+      }
+    } catch (e) {
+      // Handle any unexpected errors
+      if (context.mounted) {
+        _showErrorDialog(context, "حدث خطأ غير متوقع: $e");
       }
     }
   }
@@ -199,7 +235,7 @@ class _PurchasePageState extends State<PurchasePage> {
                 ),
               ),
               SizedBox(height: 20),
-              //! purchase bottom
+              //! purchase botton
               MaterialButton(
                 onPressed: () {
                   if (!widget.isPurchased) {
@@ -240,6 +276,41 @@ class _PurchasePageState extends State<PurchasePage> {
                   ),
                 ),
               ),
+              SizedBox(height: 45),
+              //! purchase botton for wallet
+              !widget.isPurchased
+                  ? MaterialButton(
+                      onPressed: () => addPurchasedForWallet(context),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      height: 45,
+                      minWidth: MediaQuery.of(context).size.width - 40,
+                      color: widget.isPurchased
+                          ? Colors.green
+                          : Theme.of(context).primaryColor,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width - 100,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'شراء المحاضره من المحفظه',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(Iconsax.wallet_1,
+                                color: Colors.white, size: 20),
+                          ],
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
               SizedBox(height: 45),
               //! video section name
               SizedBox(

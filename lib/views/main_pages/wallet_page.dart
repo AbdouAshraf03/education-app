@@ -49,7 +49,7 @@ class _WalletPageState extends State<WalletPage> {
       } else {
         await PurchasedService.assignCodeUser(_controller.text, uid);
         //TODO: change the amount to be added to the wallet
-        await WalletService.addMoney(uid, 60, _controller.text);
+        await WalletService.addMoney(uid, 60);
         if (context.mounted) {
           CustomDialog(
                   desc: "تم اضافة 60 جنيه بنجاح",
@@ -103,7 +103,7 @@ class _WalletPageState extends State<WalletPage> {
                 ),
               ),
             ),
-            // Card
+            //! Card
             Container(
               height: dWidth * (184 / 315),
               width: dWidth - 50,
