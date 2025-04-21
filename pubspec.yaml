@@ -44,7 +44,9 @@ dependencies:
   flutter_dotenv: ^5.2.1
   flutter_facebook_auth: ^7.1.1
   flutter_gemini: ^3.0.0
+  # flutter_jailbreak_detection: ^1.10.0
   flutter_launcher_icons: ^0.14.3
+  flutter_secure_storage: ^9.2.4
   google_generative_ai: ^0.4.6
   google_sign_in: ^6.2.2
   iconsax_flutter: ^1.0.0

@@ -1,23 +1,70 @@
+import 'dart:io';
+
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/core/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mr_samy_elmalah/data/security.dart';
 import 'package:mr_samy_elmalah/views/auth_pages/log_in_page.dart';
 import 'package:mr_samy_elmalah/views/main_pages/main_page.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await dotenv.load(fileName: '.env');
   await Firebase.initializeApp();
   // await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  void _showErrorDialog(BuildContext context, String message) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.error,
+      animType: AnimType.rightSlide,
+      title: 'Error',
+      desc: 'You are rooted, please unroot your phone.',
+      btnOkOnPress: () => exit(0),
+      dismissOnBackKeyPress: false,
+      dismissOnTouchOutside: false,
+    ).show();
+  }
+
+  void _securtyCheck() async {
+    bool isRooted = await Security.rootedDevice();
+    bool isDeveloperMode = await Security.developerModeDevice();
+    if (isRooted) {
+      if (context.mounted) {
+        _showErrorDialog(context, 'You are rooted, please unroot your phone.');
+      }
+    }
+    if (isDeveloperMode) {
+      if (context.mounted) {
+        _showErrorDialog(
+            context, 'You are in developer mode, please disable it.');
+      }
+    } else {
+      return;
+    }
+  }
+
+  @override
+  void initState() {
+    _securtyCheck();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
