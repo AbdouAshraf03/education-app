@@ -249,6 +249,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'cairo',
                     ),
                 textAlign: TextAlign.center,
               ),

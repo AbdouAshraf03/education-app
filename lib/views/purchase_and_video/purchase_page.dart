@@ -52,11 +52,20 @@ class _PurchasePageState extends State<PurchasePage> {
     final String code = PurchasePage._textFieldController.text;
 
     try {
-      final bool isValid = await PurchasedService.isValidCode(code);
-      if (!isValid) {
+      final bool isValid = await PurchasedService.isValidCode(
+        code,
+      );
+      final bool isValidVideoCode = await PurchasedService.isValidVideoCode(
+        code,
+        widget.routeArg['grade'],
+        widget.routeArg['section'],
+        widget.routeArg['vid_code'],
+      );
+      if (!isValid && !isValidVideoCode) {
         if (context.mounted) {
           _showErrorDialog(context, "الكود غير صحيح");
         }
+
         setState(() {
           isLoading = false;
         });
@@ -86,7 +95,7 @@ class _PurchasePageState extends State<PurchasePage> {
       if (isPurchased && context.mounted) {
         _showSuccessDialog(context, "تم شراء المحاضرة بنجاح");
         setState(() {
-          isLoading = true;
+          isLoading = false;
         });
       }
     } catch (e) {
@@ -271,12 +280,22 @@ class _PurchasePageState extends State<PurchasePage> {
                       SizedBox(
                         width: 5,
                       ),
-                      widget.isPurchased ? Icon(Icons.check) : SizedBox(),
+                      widget.isPurchased
+                          ? Icon(
+                              Icons.check,
+                              color:
+                                  Theme.of(context).textTheme.bodyMedium!.color,
+                            )
+                          : Icon(
+                              Iconsax.money,
+                              color:
+                                  Theme.of(context).textTheme.bodyMedium!.color,
+                            ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 45),
+              SizedBox(height: 15),
               //! purchase botton for wallet
               !widget.isPurchased
                   ? MaterialButton(
@@ -305,7 +324,11 @@ class _PurchasePageState extends State<PurchasePage> {
                               width: 5,
                             ),
                             Icon(Iconsax.wallet_1,
-                                color: Colors.white, size: 20),
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .color,
+                                size: 20),
                           ],
                         ),
                       ),

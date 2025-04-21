@@ -17,10 +17,12 @@ abstract class PurchasedService {
   }
 
   static Future<bool> isValidVideoCode(
-      String code, String grade, String section) async {
+      String code, String grade, String section, String videoId) async {
     var snapshot = await FirebaseFirestore.instance
         .collection(grade)
-        .doc(section)
+        .doc('section')
+        .collection(section)
+        .doc(videoId)
         .collection('codes')
         .doc(code)
         .get();
@@ -62,7 +64,9 @@ abstract class PurchasedService {
     } else {
       snapshot = await FirebaseFirestore.instance
           .collection(grade)
-          .doc(section)
+          .doc('section')
+          .collection(section)
+          .doc(videoCode)
           .collection('codes')
           .doc(code)
           .get();
@@ -124,13 +128,13 @@ abstract class PurchasedService {
       required int amount}) async {
     // try {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    WalletService.checkBalance(uid, amount).then((value) async {
-      if (value) {
-        await WalletService.subtractMoney(uid, amount);
-      } else {
-        return 'Not enough balance';
-      }
-    });
+    bool value = await WalletService.checkBalance(uid, amount);
+    if (value) {
+      await WalletService.subtractMoney(uid, amount);
+    } else {
+      return 'Not enough balance';
+    }
+
     bool exists = await FirebaseImport()
         .importVideoData(videoCode, section, grade, videoTitle);
     String userCode;
