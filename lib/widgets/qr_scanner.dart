@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';

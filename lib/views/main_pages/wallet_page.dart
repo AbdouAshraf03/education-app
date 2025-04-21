@@ -145,12 +145,14 @@ class _WalletPageState extends State<WalletPage> {
                     }
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(20.0),
+                              padding:
+                                  const EdgeInsets.only(top: 20.0, left: 20.0),
                               child: SizedBox(
                                 width: 100,
                                 height: 100,
@@ -165,7 +167,8 @@ class _WalletPageState extends State<WalletPage> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(20.0),
+                              padding:
+                                  const EdgeInsets.only(top: 10.0, right: 20.0),
                               child: SizedBox(
                                 width: 75,
                                 height: 75,
@@ -182,7 +185,7 @@ class _WalletPageState extends State<WalletPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(20.0),
+                              padding: const EdgeInsets.only(left: 20.0),
                               child: Text('${snapshot.data!['balance']} EGP',
                                   style: Theme.of(context)
                                       .textTheme
@@ -198,8 +201,8 @@ class _WalletPageState extends State<WalletPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, bottom: 20.0),
                               child: Text(
                                 "${snapshot.data!['fname']} ${snapshot.data!['lname']}"
                                     .toUpperCase(),
@@ -247,9 +250,11 @@ class _WalletPageState extends State<WalletPage> {
                     width: 30,
                   ),
                   title: 'Fawry',
-                  onPressed: () {
-                    print('Fawry clicked');
-                  },
+                  onPressed: () => CustomDialog(
+                    desc: 'This feature is not available yet',
+                    title: 'Info',
+                    dialogType: DialogType.info,
+                  ).showdialog(context),
                 ),
                 CustomPayMethod(
                   icon: const Icon(
@@ -286,9 +291,11 @@ class _WalletPageState extends State<WalletPage> {
                     color: Colors.white,
                   ),
                   title: 'Card',
-                  onPressed: () {
-                    print('Card clicked');
-                  },
+                  onPressed: () => CustomDialog(
+                    desc: 'This feature is not available yet',
+                    title: 'Info',
+                    dialogType: DialogType.info,
+                  ).showdialog(context),
                 ),
               ],
             ),
