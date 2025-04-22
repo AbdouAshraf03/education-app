@@ -29,40 +29,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  void _showErrorDialog(BuildContext context, String message) {
-    AwesomeDialog(
-      context: context,
-      dialogType: DialogType.error,
-      animType: AnimType.rightSlide,
-      title: 'Error',
-      desc: 'You are rooted, please unroot your phone.',
-      btnOkOnPress: () => exit(0),
-      dismissOnBackKeyPress: false,
-      dismissOnTouchOutside: false,
-    ).show();
-  }
-
-  void _securtyCheck() async {
-    bool isRooted = await Security.rootedDevice();
-    bool isDeveloperMode = await Security.developerModeDevice();
-    if (isRooted) {
-      if (context.mounted) {
-        _showErrorDialog(context, 'You are rooted, please unroot your phone.');
-      }
-    }
-    if (isDeveloperMode) {
-      if (context.mounted) {
-        _showErrorDialog(
-            context, 'You are in developer mode, please disable it.');
-      }
-    } else {
-      return;
-    }
-  }
-
   @override
   void initState() {
-    _securtyCheck();
     super.initState();
   }
 
@@ -102,6 +70,41 @@ class AuthWrapper extends StatefulWidget {
 }
 
 class _AuthWrapperState extends State<AuthWrapper> {
+  void _showErrorDialog(BuildContext context, String message) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.error,
+      animType: AnimType.rightSlide,
+      title: 'Error',
+      desc: message,
+      btnOkOnPress: () => exit(0),
+      dismissOnBackKeyPress: false,
+      dismissOnTouchOutside: false,
+    ).show();
+  }
+
+  void _securtyCheck() async {
+    bool isRooted = await Security.rootedDevice();
+    bool isDeveloperMode = await Security.developerModeDevice();
+    if (isRooted && mounted) {
+      _showErrorDialog(context, 'You are rooted, please unroot your phone.');
+    }
+    if (isDeveloperMode) {
+      if (context.mounted) {
+        if (isDeveloperMode && mounted) {
+          _showErrorDialog(
+              context, 'You are in developer mode, please disable it.');
+        }
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    _securtyCheck();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
