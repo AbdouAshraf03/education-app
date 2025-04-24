@@ -24,7 +24,6 @@ class PurchasePage extends StatefulWidget {
 }
 
 class _PurchasePageState extends State<PurchasePage> {
-  // Helper method to show an error dialog
   bool isLoading = false;
   void _showErrorDialog(BuildContext context, String message) {
     CustomDialog(
@@ -34,7 +33,6 @@ class _PurchasePageState extends State<PurchasePage> {
     ).showdialog(context);
   }
 
-// Helper method to show a success dialog
   void _showSuccessDialog(BuildContext context, String message) {
     CustomDialog(
       title: 'Success',
@@ -147,14 +145,8 @@ class _PurchasePageState extends State<PurchasePage> {
   int _getTimeRemaining(DateTime purchasedDate) {
     DateTime now = DateTime.now();
     int maxCooldownDays = 3;
-
-    // Calculate the difference between now and the purchased date
     Duration difference = now.difference(purchasedDate);
-
-    // Calculate the remaining days in the cooldown period
     int remainingDays = maxCooldownDays - difference.inDays;
-
-    // Ensure the result is not negative (cooldown expired)
     return remainingDays > 0 ? remainingDays : 0;
   }
 
@@ -223,7 +215,12 @@ class _PurchasePageState extends State<PurchasePage> {
               ),
               SizedBox(height: 20),
               //! mony
-              SizedBox(
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: Colors.grey.shade200,
+                ),
+                height: 45,
                 width: MediaQuery.of(context).size.width - 40,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -234,7 +231,7 @@ class _PurchasePageState extends State<PurchasePage> {
                           : '(ايام ${_getTimeRemaining((widget.routeArg['purchased_date'] as Timestamp).toDate()).toString()} )',
                       textAlign: TextAlign.center,
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                     SizedBox(width: 5),
                     Text(
@@ -244,7 +241,7 @@ class _PurchasePageState extends State<PurchasePage> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 18,
                           color: Theme.of(context).primaryColor),
                     ),
                   ],
@@ -279,10 +276,8 @@ class _PurchasePageState extends State<PurchasePage> {
                         !widget.isPurchased
                             ? 'شراء المحاضره'
                             : 'تم شراء المحاضرة',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                       SizedBox(
                         width: 5,
@@ -295,8 +290,7 @@ class _PurchasePageState extends State<PurchasePage> {
                             )
                           : Icon(
                               Iconsax.money,
-                              color:
-                                  Theme.of(context).textTheme.bodyMedium!.color,
+                              color: Colors.white,
                             ),
                     ],
                   ),
@@ -325,17 +319,15 @@ class _PurchasePageState extends State<PurchasePage> {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
-                                  .copyWith(fontWeight: FontWeight.bold),
+                                  .copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
                             ),
                             SizedBox(
                               width: 5,
                             ),
                             Icon(Iconsax.wallet_1,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .color,
-                                size: 20),
+                                color: Colors.white, size: 20),
                           ],
                         ),
                       ),
@@ -346,7 +338,7 @@ class _PurchasePageState extends State<PurchasePage> {
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: Text(
-                  'المحاضرات',
+                  'المحتوايات',
                   textAlign: TextAlign.end,
                   style: TextStyle(
                       color: const Color.fromARGB(255, 127, 127, 127)),
@@ -354,55 +346,165 @@ class _PurchasePageState extends State<PurchasePage> {
               ),
               SizedBox(height: 20),
               //! videos
-              SizedBox(
-                height: 250,
-                child: ListView.builder(
-                    itemCount: widget.routeArg['video_url']!.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            onTap: () {
-                              widget.isPurchased
-                                  ? Navigator.pushNamed(
-                                      context, AppRoutes.videoPlayerPage,
-                                      arguments:
-                                          widget.routeArg['video_url']![index])
-                                  : null;
-                            },
-                            title: Text(
-                              'part ${index + 1}',
-                              textAlign: TextAlign.end,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(
-                                    fontFamily: 'roboto',
+
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: MediaQuery.of(context).size.width - 40,
+                // height: 250,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: Colors.grey.shade200,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).primaryColor,
+                      blurRadius: 10.0,
+                      spreadRadius: 1,
+                      offset: Offset(0.0, 5.0),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20), // Padding instead of subtracting 40
+                  child: Column(
+                    children: [
+                      // Heading
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          ': المحاضرات',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            color: const Color.fromARGB(255, 85, 89, 107),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10), // Add some spacing
+                      //! Videos
+                      Column(
+                        children: List.generate(
+                          widget.routeArg['video_url'].length ?? 0,
+                          (index) {
+                            return Column(
+                              children: [
+                                ListTile(
+                                  onTap: () {
+                                    if (widget.isPurchased) {
+                                      Navigator.pushNamed(
+                                        context,
+                                        AppRoutes.videoPlayerPage,
+                                        arguments: widget.routeArg['video_url']
+                                                [index] ??
+                                            '',
+                                      );
+                                    }
+                                  },
+                                  title: Text(
+                                    'الجزء ${index + 1}',
+                                    textAlign: TextAlign.end,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          fontFamily: 'ge_ss',
+                                        ),
                                   ),
-                            ),
-                            trailing: Container(
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(7))),
-                              height: 50,
-                              width: 50,
-                              child: Center(
-                                child: Icon(
-                                  Icons.video_collection_rounded,
-                                  color: Colors.white,
+                                  trailing: Container(
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(7)),
+                                    ),
+                                    height: 50,
+                                    width: 50,
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.video_collection_rounded,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+
+                      // // Content List
+                      const SizedBox(height: 20),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          ': الشيتات',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            color: const Color.fromARGB(255, 85, 89, 107),
                           ),
-                          Divider(
-                            height: 5,
-                            color: Colors.black,
-                          ),
-                        ],
-                      );
-                    }),
+                        ),
+                      ),
+                      const SizedBox(height: 10), // Add some spacing
+
+                      Column(
+                        children: List.generate(
+                          widget.routeArg['pdfs'].length ?? 0,
+                          (index) {
+                            return Column(
+                              children: [
+                                ListTile(
+                                  onTap: () {
+                                    if (widget.isPurchased) {
+                                      Navigator.pushNamed(
+                                        context,
+                                        AppRoutes.videoPlayerPage,
+                                        arguments: widget.routeArg['pdfs']
+                                                [index] ??
+                                            '',
+                                      );
+                                    }
+                                  },
+                                  title: Text(
+                                    'الشيت ${index + 1}',
+                                    textAlign: TextAlign.end,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          fontFamily: 'ge_ss',
+                                        ),
+                                  ),
+                                  trailing: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(7)),
+                                    ),
+                                    height: 50,
+                                    width: 50,
+                                    child: Center(
+                                      child: Icon(
+                                        Iconsax.paperclip_copy,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
