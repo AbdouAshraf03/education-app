@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 abstract class Security {
   static final String user = FirebaseAuth.instance.currentUser!.uid;
+
   static Future<bool> handleLogin(String uid) async {
     final deviceId = await AssistantMethods.getDeviceId();
     final doc = FirebaseFirestore.instance.collection('Students').doc(uid);
@@ -27,7 +28,7 @@ abstract class Security {
     try {
       const platform = MethodChannel('security_channel');
       final bool result = await platform.invokeMethod('isRooted');
-      print(result ? 'Device is rooted' : 'Device is not rooted');
+
       return result;
     } on PlatformException {
       return false;
@@ -38,8 +39,7 @@ abstract class Security {
     try {
       const platform = MethodChannel('security_channel');
       final bool result = await platform.invokeMethod('isDeveloperMode');
-      print(
-          result ? 'Developer mode is enabled' : 'Developer mode is disabled');
+
       return result;
     } on PlatformException {
       return false;

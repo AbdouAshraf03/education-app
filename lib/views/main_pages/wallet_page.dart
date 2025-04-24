@@ -12,7 +12,7 @@ import '../../widgets/qr_scanner.dart';
 import '../../widgets/small_widgets.dart';
 
 class WalletPage extends StatefulWidget {
-  WalletPage({super.key});
+  const WalletPage({super.key});
 
   @override
   State<WalletPage> createState() => _WalletPageState();
