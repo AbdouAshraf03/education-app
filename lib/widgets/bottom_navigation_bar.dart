@@ -39,6 +39,10 @@ class MyBottomNavigationBar extends StatelessWidget {
             icon: Iconsax.video_play_copy,
             unselectedColor: Theme.of(context).primaryIconTheme.color,
           ),
+          CrystalNavigationBarItem(
+            icon: Iconsax.wallet_1_copy,
+            unselectedColor: Theme.of(context).primaryIconTheme.color,
+          ),
         ],
       ),
     );

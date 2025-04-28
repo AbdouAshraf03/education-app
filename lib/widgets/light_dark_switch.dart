@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mr_samy_elmalah/core/app_theme.dart';
 
 class LightDarkSwitchApp extends StatefulWidget {
-  LightDarkSwitchApp({super.key});
+  const LightDarkSwitchApp({super.key});
 
   @override
   State<LightDarkSwitchApp> createState() => _LightDarkSwitchAppState();

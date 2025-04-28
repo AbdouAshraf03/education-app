@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mr_samy_elmalah/core/app_routes.dart';
 import 'package:mr_samy_elmalah/data/firebase_import.dart';
 import 'package:mr_samy_elmalah/data/firebase_retrieve.dart';
+import 'package:mr_samy_elmalah/data/security.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
 class FirebaseAuthService {
@@ -32,6 +33,25 @@ class FirebaseAuthService {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      //TODO: enable this after u finsh the app
+      /*
+      final String uid = Security.user;
+      final bool isLoginInAnotherDevice = await Security.handleLogin(uid);
+      if (!isLoginInAnotherDevice) {
+        return;
+      } else {
+        if (context.mounted) {
+          await signOut();
+        }
+        if (context.mounted) {
+          CustomDialog(
+                  title: 'Error',
+                  desc: 'The user is logged in from another device',
+                  dialogType: DialogType.error)
+              .showdialog(context);
+        }
+      }
+      */
     } on FirebaseAuthException catch (e) {
       // print(e.code);
       if (context.mounted) {
@@ -50,6 +70,7 @@ class FirebaseAuthService {
     try {
       final UserCredential credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+
       return credential;
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
@@ -80,9 +101,23 @@ class FirebaseAuthService {
       );
 
       // Step 2: Sign in to Firebase with the Google credential
-      final UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
 
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      final String uid = Security.user;
+      final bool isLoginInAnotherDevice = await Security.handleLogin(uid);
+      if (isLoginInAnotherDevice) {
+        if (context.mounted) {
+          await signOut();
+        }
+        if (context.mounted) {
+          CustomDialog(
+                  title: 'Error',
+                  desc: 'The user is logged in from another device',
+                  dialogType: DialogType.error)
+              .showdialog(context);
+        }
+        return;
+      }
       bool saveData = await FirebaseRetrieve().isThereUser();
       if (!saveData) {
         // Step 5: Save user data if it doesn't exist

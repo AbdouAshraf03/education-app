@@ -49,14 +49,14 @@ class _SearchPageState extends State<SearchPage> {
         _isLoading = false;
       });
     } catch (e) {
-      print(e.toString() + ' =======================');
+      print('$e =======================');
       setState(() {
         _isLoading = false;
       });
     }
   }
 
-  Future<List<String>?> getSections(String grade) async {
+  Future<Map<String, dynamic>?> getSections(String grade) async {
     try {
       return FirebaseRetrieve().getSectionsNames(grade);
     } catch (e) {
@@ -112,7 +112,8 @@ class _SearchPageState extends State<SearchPage> {
                 if (value != null) {
                   final sections = await getSections(value);
                   setState(() {
-                    _sectionsList = sections;
+                    _sectionsList =
+                        sections?.keys.toList(); // Update sections list
                     // _isLoadingSections = false; // Hide loading indicator
                   });
                 } // Fetch videos when grade is selected
@@ -196,7 +197,7 @@ class GradeDropdownMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<DropdownMenuEntry<String>> _grades = [
+    final List<DropdownMenuEntry<String>> grades = [
       DropdownMenuEntry(
         value: '1st_secondary',
         label: 'الصف الاول الثانوي',
@@ -223,7 +224,7 @@ class GradeDropdownMenu extends StatelessWidget {
       ),
     ];
     return DropdownMenu<String>(
-      dropdownMenuEntries: _grades,
+      dropdownMenuEntries: grades,
       initialSelection: selectedGrade,
       width: MediaQuery.of(context).size.width - 20,
       textStyle: Theme.of(context)
@@ -260,7 +261,8 @@ class SectionDropdownMenu extends StatelessWidget {
   final String? selectedSection;
   final Function(String?) onSectionSelected;
 
-  SectionDropdownMenu({
+  const SectionDropdownMenu({
+    super.key,
     required this.selectedSection,
     required this.sectionsList,
     required this.onSectionSelected,

@@ -5,8 +5,7 @@ class SecondaryCard extends StatefulWidget {
     required this.routeName,
     super.key,
     required this.title,
-    this.imageUrl =
-        'https://wallpapers.com/images/featured/math-background-jbcyizvw0ckuvcro.jpg',
+    required this.imageUrl,
   });
 
   final String routeName;
@@ -91,16 +90,9 @@ class _SecondaryCardState extends State<SecondaryCard>
               child: Container(
                 height: 240,
                 decoration: BoxDecoration(
-                  // boxShadow: const [
-                  //   BoxShadow(
-                  //     color: Color.fromARGB(149, 0, 0, 0),
-                  //     blurRadius: 10,
-                  //     offset: Offset(0, 8),
-                  //   )
-                  // ],
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
                   image: DecorationImage(
-                    image: NetworkImage(widget.imageUrl),
+                    image: AssetImage(widget.imageUrl),
                     fit: BoxFit.cover,
                   ),
                 ),

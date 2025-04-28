@@ -1,1 +1,22 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"mr-sami-elmallah","appId":"1:663948094142:android:b88b9f8e3b698e5a970cef","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"mr-sami-elmallah","configurations":{"android":"1:663948094142:android:b88b9f8e3b698e5a970cef","ios":"1:663948094142:ios:50feb6953a4ea1d5970cef"}}}}}}
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "mr-sami-elmallah",
+                    "appId": "1:663948094142:android:b88b9f8e3b698e5a970cef",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "mr-sami-elmallah",
+                    "configurations": {
+                        "android": "1:663948094142:android:b88b9f8e3b698e5a970cef",
+                        "ios": "1:663948094142:ios:50feb6953a4ea1d5970cef"
+                    }
+                }
+            }
+        }
+    }
+}

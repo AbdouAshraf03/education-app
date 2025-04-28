@@ -32,16 +32,16 @@ class DepartmentVideos extends StatelessWidget {
           );
         }
         if (snapshot.hasData) {
-          //print(snapshot.data);
           return _buildmain(
             context,
             ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) => MyVideosCard(
-                      myVideos: snapshot.data![index],
-                      isPurchased: false,
-                      section: title,
-                    )),
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) => MyVideosCard(
+                myVideos: snapshot.data![index],
+                isPurchased: false,
+                section: title,
+              ),
+            ),
           );
         }
         if (snapshot.hasError) {

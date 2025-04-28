@@ -7,6 +7,7 @@ import 'package:mr_samy_elmalah/views/main_pages/ai_page.dart';
 import 'package:mr_samy_elmalah/views/main_pages/home_page.dart';
 import 'package:mr_samy_elmalah/views/main_pages/main_page.dart';
 import 'package:mr_samy_elmalah/views/main_pages/video_page.dart';
+import 'package:mr_samy_elmalah/views/main_pages/wallet_page.dart';
 import 'package:mr_samy_elmalah/views/profile_page/profile_page.dart';
 import 'package:mr_samy_elmalah/views/purchase_and_video/purchase_page.dart';
 import 'package:mr_samy_elmalah/views/search_page/search_page.dart';
@@ -25,7 +26,8 @@ class AppRoutes {
   static const String profilePage = '/profilePage';
   static const String searchPage = '/searchPage';
   static const String mainPage = '/mainPage';
-  // static const String departments = '/departments';
+  static const String departments = '/departments';
+  static const String walletPage = '/walletPage';
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       // home page
@@ -73,7 +75,6 @@ class AppRoutes {
       case purchasePage:
         final routeArg = settings.arguments as Map<String, dynamic>;
         final isPurchased = routeArg['isPurchased'];
-
         return MaterialPageRoute(
             builder: (context) => PurchasePage(
                   routeArg: routeArg,
@@ -89,8 +90,12 @@ class AppRoutes {
             builder: (context) => VideoPlayerPage(
                   videoUrl: videoUrl,
                 ));
+      // search page
       case searchPage:
         return MaterialPageRoute(builder: (context) => SearchPage());
+      // wallet page
+      case walletPage:
+        return MaterialPageRoute(builder: (context) => WalletPage());
       default:
         return MaterialPageRoute(
           builder: (context) => const Scaffold(

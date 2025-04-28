@@ -7,6 +7,8 @@ import 'package:mr_samy_elmalah/data/firebase_auth_service.dart';
 import 'package:mr_samy_elmalah/widgets/custom_text_field.dart';
 import 'package:mr_samy_elmalah/widgets/small_widgets.dart';
 
+import '../../core/app_assets.dart';
+
 // ignore: must_be_immutable
 class LogInPage extends StatefulWidget {
   const LogInPage({super.key});
@@ -42,8 +44,7 @@ class _LogInPageState extends State<LogInPage> {
                     decoration: const BoxDecoration(
                       //color: Colors.blue,
                       image: DecorationImage(
-                          image: AssetImage(
-                              'assets/logos/3math_logo-removebg.png')),
+                          image: AssetImage(LogoAppAssets.logoNoPg)),
                       //borderRadius: BorderRadius.only(),
                     ),
                   ),
@@ -138,43 +139,57 @@ class _LogInPageState extends State<LogInPage> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       onPressed: () async {
-                        setState(() {
-                          isLoading = true;
-                        });
+                        setState(() => isLoading = true);
+
+                        if (!context.mounted) return;
+
                         try {
+                          // 1. Attempt login
+
                           await FirebaseAuthService().normalSignIn(
                             _emailController.text,
                             _passController.text,
                             context,
                           );
 
-                          User? user = FirebaseAuth.instance.currentUser;
-                          if (!(user!.emailVerified)) {
+                          // 3. Get current user
+                          final User? user = FirebaseAuth.instance.currentUser;
+                          if (user == null || !context.mounted) return;
+
+                          // 4. Handle email verification
+                          if (!user.emailVerified) {
+                            await FirebaseAuth.instance
+                                .signOut(); // Sign out first
                             if (context.mounted) {
-                              await AwesomeDialog(
-                                context: context,
-                                dialogType: DialogType.info,
-                                animType: AnimType.rightSlide,
+                              await CustomDialog(
                                 title: 'Notice',
                                 desc: 'Please verify your email first',
-                              ).show();
+                                dialogType: DialogType.info,
+                              ).showdialog(context);
                             }
-                            await FirebaseAuth.instance.signOut();
-                          } else {
-                            if (context.mounted) {
-                              Navigator.pushReplacementNamed(
-                                context,
-                                AppRoutes.mainPage,
-                                arguments: 0,
-                              );
-                            }
+                            return;
+                          }
+
+                          // 5. Only navigate if everything is valid
+                          if (context.mounted) {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              AppRoutes.mainPage,
+                              arguments: 0,
+                            );
                           }
                         } catch (e) {
-                          print(e);
+                          if (context.mounted) {
+                            CustomDialog(
+                              title: 'Error',
+                              desc: e.toString(),
+                              dialogType: DialogType.error,
+                            ).showdialog(context);
+                          }
                         } finally {
-                          setState(() {
-                            isLoading = false;
-                          });
+                          if (mounted) {
+                            setState(() => isLoading = false);
+                          }
                         }
                       },
                       child: isLoading
@@ -227,23 +242,25 @@ class _LogInPageState extends State<LogInPage> {
                                 ? null
                                 : DecorationImage(
                                     image: AssetImage(
-                                        'assets/images/icons8-google-48.png'),
+                                      ImageAppAssets.google48,
+                                    ),
                                   ),
                             borderRadius: BorderRadius.circular(10)),
                         child: isLoading
                             ? LottieLoader()
                             : MaterialButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  FirebaseAuthService()
-                                      .signInWithGoogle(context)
-                                      .then((_) {
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                  });
+                                onPressed: () async {
+                                  if (!mounted) return;
+                                  setState(() => isLoading = true);
+
+                                  try {
+                                    await FirebaseAuthService()
+                                        .signInWithGoogle(context);
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() => isLoading = false);
+                                    }
+                                  }
                                 },
                               ),
                       ),
@@ -258,13 +275,18 @@ class _LogInPageState extends State<LogInPage> {
                               width: 0.5,
                             ),
                             image: DecorationImage(
-                                image: AssetImage(
-                                    'assets/images/icons8-facebook-96.png'),
+                                image: AssetImage(ImageAppAssets.facebook96),
                                 scale: 1.9),
                             color: Color(0xff039BE5),
                             borderRadius: BorderRadius.circular(10)),
                         child: MaterialButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            CustomDialog(
+                                    title: 'قيد التطوير',
+                                    desc: '',
+                                    dialogType: DialogType.info)
+                                .showdialog(context);
+                          },
                         ),
                       ),
                     ],
